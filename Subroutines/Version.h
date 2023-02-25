@@ -1,3 +1,7 @@
+//Author: Anthony West
+//Contains routines for working with module versions.
+// -Every attempt should be made to keep this module at least Windows portable.
+
 //---------------------------------------------------------------------------
 
 #ifndef VersionH

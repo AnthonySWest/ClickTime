@@ -14,6 +14,7 @@ object FrmMain: TFrmMain
   Font.Style = []
   Position = poScreenCenter
   OnCloseQuery = FormCloseQuery
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   TextHeight = 15
   object Label1: TLabel

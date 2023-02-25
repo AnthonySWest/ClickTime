@@ -4,6 +4,7 @@
 #pragma hdrstop
 
 #include "MainForm.h"
+#include "StringTool.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -71,12 +72,19 @@ System::Word TFrmMain::AppStart_MSec;
 __fastcall TFrmMain::TFrmMain(TComponent* Owner)
     : TForm(Owner)
 {
+    WinKeyEventHook = nullptr;
+
     Caption = Caption + " - " + TFrmMain::CompanyName + " - " + AppVersion.ToStrVer().c_str();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::FormCreate(TObject *Sender)
+{
+    InitializeKeyEventHook();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::FormDestroy(TObject *Sender)
 {
-    //don't remove this comment
+    ShutdownKeyEventHook();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams &params)
@@ -106,6 +114,82 @@ void TFrmMain::SetFormToProcessStopped()
 
     CBoxTimeFrame->Enabled = true;
     EditTimeValue->Enabled  = true;
+}
+//---------------------------------------------------------------------------
+// See: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
+// sets up the event hook.
+void TFrmMain::InitializeKeyEventHook()
+{
+	//::CoInitialize(NULL);
+	WinKeyEventHook = ::SetWindowsHookExW(
+		WH_KEYBOARD_LL,     //type of hook procedure to be installed
+		LowLevelKeyboardProc, // The callback.
+		NULL,               // (HINSTANCE) Handle to DLL (if NULL, current process is used).
+		0);                 // (DWORD) identifier of the thread with which the hook procedure is to be associated
+
+    if (NULL == WinKeyEventHook)
+    {
+        DWORD lastErr = ::GetLastError();
+        std::wstring lastErrMsg = L"Failed to set the key event hook for starting/stopping the keyboard from hot key.\n\nWin error: " +
+            TStrTool::GetWindowsLastErrorCodeAsStringW(lastErr);
+        MsgDlg(lastErrMsg.c_str(), TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
+    }
+}
+//---------------------------------------------------------------------------
+// See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
+// Unhooks the event
+void TFrmMain::ShutdownKeyEventHook()
+{
+	::UnhookWindowsHookEx(WinKeyEventHook);
+	WinKeyEventHook = nullptr;
+	//::CoUninitialize();
+}
+//---------------------------------------------------------------------------
+//see: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms644985(v=vs.85)
+// - nCode: Must return right away if less than zero. Otherwise, process
+// - wParam can be: WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, or WM_SYSKEYUP
+// - lParam is a pointer to a KBDLLHOOKSTRUCT structure.
+LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
+{
+    if (nCode < 0) //per documentation, return without further processing ASAP
+        return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+        
+    //at this point, it should be HC_ACTION, but check anyway
+    if (HC_ACTION != nCode || nullptr == FrmMain) 
+        return ::CallNextHookEx(NULL, nCode, wParam, lParam);
+
+    switch (wParam)
+    {
+        case WM_SYSKEYDOWN:
+        case WM_SYSKEYUP:
+            break;
+        case WM_KEYDOWN:
+        case WM_KEYUP:
+            PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam;
+            
+            if (key->vkCode == VK_F6)
+            {     
+                if (WM_KEYDOWN == wParam)
+                {
+                    //can redirect - keeping here for knowledge sake
+                    //::keybd_event('B', 0, 0, 0);
+                }
+                else if (WM_KEYUP == wParam) // Keyup
+                {
+                    if (FrmMain->BtnStart->Enabled)
+                        FrmMain->BtnStartClick(nullptr);
+                    else
+                        FrmMain->BtnStopClick(nullptr);
+                
+                    //finish redirect - keeping here for knowledge sake
+                    //::keybd_event('B', 0, KEYEVENTF_KEYUP, 0);
+                }
+                
+            }
+            break;
+    }
+
+    return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 //---------------------------------------------------------------------------
 void TFrmMain::MouseLeftClick()

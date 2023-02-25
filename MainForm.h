@@ -26,11 +26,14 @@ __published:	// IDE-managed Components
     void __fastcall TimerClickTimer(TObject *Sender);
     void __fastcall BtnStopClick(TObject *Sender);
     void __fastcall CBoxTimeFrameChange(TObject *Sender);
+    void __fastcall FormCreate(TObject *Sender);
 private:	// User declarations
 
     // /////////// Static vars go here ////////////////////////////
 
 	// /////////// Non-static vars go here ////////////////////////////
+
+    HHOOK WinKeyEventHook;
 
 	// /////////// Functions go here ////////////////////////////
 
@@ -38,6 +41,9 @@ private:	// User declarations
 //	void MoveMouse(int x, int y);
 	void MouseLeftClick();
 //	void MouseRightClick();
+
+    void InitializeKeyEventHook();
+	void ShutdownKeyEventHook();
 
 
 public:		// User declarations
@@ -66,6 +72,8 @@ public:		// User declarations
     void SetFormToProcessStarted();
     void SetFormToProcessStopped();
 
+    static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+
 	// /////////// Properties go here ////////////////////////////
 
 };
@@ -73,5 +81,6 @@ public:		// User declarations
 extern PACKAGE TFrmMain *FrmMain;
 
 int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType, TMsgDlgButtons buttons);
+
 //---------------------------------------------------------------------------
 #endif
