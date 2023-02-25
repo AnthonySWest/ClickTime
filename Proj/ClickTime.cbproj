@@ -161,6 +161,12 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
     </PropertyGroup>
     <ItemGroup>
+        <CppCompile Include="..\AboutForm.cpp">
+            <Form>FrmAbout</Form>
+            <FormType>dfm</FormType>
+            <DependentOn>..\AboutForm.h</DependentOn>
+            <BuildOrder>7</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\MainForm.cpp">
             <Form>FrmMain</Form>
             <FormType>dfm</FormType>
@@ -178,6 +184,10 @@
             <DependentOn>..\Subroutines\AppTool.h</DependentOn>
             <BuildOrder>6</BuildOrder>
         </CppCompile>
+        <CppCompile Include="..\Subroutines\MouseTool.cpp">
+            <DependentOn>..\Subroutines\MouseTool.h</DependentOn>
+            <BuildOrder>8</BuildOrder>
+        </CppCompile>
         <CppCompile Include="..\Subroutines\PathTool.cpp">
             <DependentOn>..\Subroutines\PathTool.h</DependentOn>
             <BuildOrder>5</BuildOrder>
@@ -191,6 +201,7 @@
             <BuildOrder>3</BuildOrder>
         </CppCompile>
         <FormResources Include="..\MainForm.dfm"/>
+        <FormResources Include="..\AboutForm.dfm"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

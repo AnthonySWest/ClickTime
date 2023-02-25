@@ -10,6 +10,8 @@
 #include "Version.h"
 #include <Vcl.Buttons.hpp>
 #include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Menus.hpp>
+#include <Vcl.ComCtrls.hpp>
 //---------------------------------------------------------------------------
 class TFrmMain : public TForm
 {
@@ -20,6 +22,17 @@ __published:	// IDE-managed Components
     TComboBox *CBoxTimeFrame;
     TLabel *Label1;
     TEdit *EditTimeValue;
+    TBitBtn *BtnAbout;
+    TBitBtn *BtnExit;
+    TStatusBar *StatusBar1;
+    TGroupBox *GBoxMouse;
+    TRadioButton *RB_MouseLeft;
+    TRadioButton *RB_MouseRight;
+    TGroupBox *GroupBox1;
+    TCheckBox *CB_HK_Shift;
+    TCheckBox *CB_HK_Ctrl;
+    TCheckBox *CB_HK_Alt;
+    TComboBox *CBox_HK_FKey;
     void __fastcall FormDestroy(TObject *Sender);
     void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
     void __fastcall BtnStartClick(TObject *Sender);
@@ -27,6 +40,8 @@ __published:	// IDE-managed Components
     void __fastcall BtnStopClick(TObject *Sender);
     void __fastcall CBoxTimeFrameChange(TObject *Sender);
     void __fastcall FormCreate(TObject *Sender);
+    void __fastcall BtnAboutClick(TObject *Sender);
+    void __fastcall BtnExitClick(TObject *Sender);
 private:	// User declarations
 
     // /////////// Static vars go here ////////////////////////////
@@ -35,13 +50,16 @@ private:	// User declarations
 
     HHOOK WinKeyEventHook;
 
+    bool ShiftKeyDown;
+    bool CtrlKeyDown;
+    bool AltKeyDown;
+
+    long long ClickCount;
+
 	// /////////// Functions go here ////////////////////////////
 
 	virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
-//	void MoveMouse(int x, int y);
-	void MouseLeftClick();
-//	void MouseRightClick();
-
+	
     void InitializeKeyEventHook();
 	void ShutdownKeyEventHook();
 
@@ -73,6 +91,7 @@ public:		// User declarations
     void SetFormToProcessStopped();
 
     static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+    static DWORD GetShiftStateMask(bool shift, bool ctrl, bool alt);
 
 	// /////////// Properties go here ////////////////////////////
 

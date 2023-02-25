@@ -7,6 +7,7 @@
 #include <Vcl.Styles.hpp>
 #include <Vcl.Themes.hpp>
 USEFORM("..\MainForm.cpp", FrmMain);
+USEFORM("..\AboutForm.cpp", FrmAbout);
 //---------------------------------------------------------------------------
 #include "MainForm.h"
 #include "PathTool.h"
@@ -47,6 +48,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
         Application->Title = "ClickTime";
         TStyleManager::TrySetStyle("Windows10 SlateGray");
         Application->CreateForm(__classid(TFrmMain), &FrmMain);
+         Application->CreateForm(__classid(TFrmAbout), &FrmAbout);
          Application->Run();
     }
     catch (Exception &exception)

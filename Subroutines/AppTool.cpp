@@ -1,10 +1,10 @@
+//Author: Anthony West
+//See header for info.
 //---------------------------------------------------------------------------
 
 #pragma hdrstop
 
 #include "AppTool.h"
-//---------------------------------------------------------------------------
-#pragma package(smart_init)
 
 #ifdef USE_ELOG
     #include "EasyLogger.h"

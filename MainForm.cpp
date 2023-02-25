@@ -4,7 +4,9 @@
 #pragma hdrstop
 
 #include "MainForm.h"
+#include "AboutForm.h"
 #include "StringTool.h"
+#include "MouseTool.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma resource "*.dfm"
@@ -73,6 +75,10 @@ __fastcall TFrmMain::TFrmMain(TComponent* Owner)
     : TForm(Owner)
 {
     WinKeyEventHook = nullptr;
+    ClickCount = 0;
+    ShiftKeyDown = false;
+    CtrlKeyDown = false;
+    AltKeyDown = false;
 
     Caption = Caption + " - " + TFrmMain::CompanyName + " - " + AppVersion.ToStrVer().c_str();
 }
@@ -102,6 +108,7 @@ void TFrmMain::SetFormToProcessStarted()
 {
     BtnStart->Enabled = false;
     BtnStop->Enabled = true;
+    BtnAbout->Enabled = false;
 
     CBoxTimeFrame->Enabled = false;
     EditTimeValue->Enabled  = false;
@@ -111,6 +118,7 @@ void TFrmMain::SetFormToProcessStopped()
 {
     BtnStart->Enabled = true;
     BtnStop->Enabled = false;
+    BtnAbout->Enabled = true;
 
     CBoxTimeFrame->Enabled = true;
     EditTimeValue->Enabled  = true;
@@ -160,83 +168,131 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
 
     switch (wParam)
     {
-        case WM_SYSKEYDOWN:
-        case WM_SYSKEYUP:
-            break;
         case WM_KEYDOWN:
-        case WM_KEYUP:
+        case WM_SYSKEYDOWN:
+        {
             PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam;
-            
-            if (key->vkCode == VK_F6)
+            DWORD vkCode = key->vkCode;
+
+            if (VK_LSHIFT == vkCode || VK_RSHIFT == vkCode)
+                FrmMain->ShiftKeyDown = true;
+            else if (VK_LCONTROL == vkCode || VK_RCONTROL == vkCode)
+                FrmMain->CtrlKeyDown = true;
+            else if (VK_LMENU == vkCode || VK_RMENU == vkCode)
+                FrmMain->AltKeyDown = true;
+                
+            //can redirect - keeping here for knowledge sake
+            //::keybd_event('A', 0, 0, 0);
+            break;
+        }
+        case WM_SYSKEYUP:
+        case WM_KEYUP:
+        {
+            PKBDLLHOOKSTRUCT key = (PKBDLLHOOKSTRUCT)lParam;
+            DWORD vkCode = key->vkCode;
+            //bool altKeyDown = key->flags & LLKHF_ALTDOWN; //isn't always accurate for this use case
+
+            if (VK_LSHIFT == vkCode || VK_RSHIFT == vkCode)
+                FrmMain->ShiftKeyDown = false;
+            else if (VK_LCONTROL == vkCode || VK_RCONTROL == vkCode)
+                FrmMain->CtrlKeyDown = false;            
+            else if (VK_LMENU == vkCode || VK_RMENU == vkCode)
+                FrmMain->AltKeyDown = false;
+            else if (vkCode == VK_F1 + FrmMain->CBox_HK_FKey->ItemIndex)
             {     
-                if (WM_KEYDOWN == wParam)
-                {
-                    //can redirect - keeping here for knowledge sake
-                    //::keybd_event('B', 0, 0, 0);
-                }
-                else if (WM_KEYUP == wParam) // Keyup
+                DWORD shiftSettingsMask = GetShiftStateMask(FrmMain->CB_HK_Shift->Checked,
+                    FrmMain->CB_HK_Ctrl->Checked, FrmMain->CB_HK_Alt->Checked);
+                DWORD shiftStateMask = GetShiftStateMask(FrmMain->ShiftKeyDown, FrmMain->CtrlKeyDown, FrmMain->AltKeyDown);
+                        
+                if (shiftStateMask == shiftSettingsMask)
                 {
                     if (FrmMain->BtnStart->Enabled)
                         FrmMain->BtnStartClick(nullptr);
                     else
                         FrmMain->BtnStopClick(nullptr);
-                
-                    //finish redirect - keeping here for knowledge sake
-                    //::keybd_event('B', 0, KEYEVENTF_KEYUP, 0);
                 }
-                
             }
+
+            //finish redirect - keeping here for knowledge sake
+            //::keybd_event('A', 0, KEYEVENTF_KEYUP, 0);
             break;
+        }
     }
 
+    //Note: return 1 instead of calling the next hook to eat the key event.
     return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 //---------------------------------------------------------------------------
-void TFrmMain::MouseLeftClick()
+DWORD TFrmMain::GetShiftStateMask(bool shift, bool ctrl, bool alt)
 {
-	INPUT mInput;
+    DWORD shiftState = 0;
 
-	mInput.type = INPUT_MOUSE;
-	mInput.mi.mouseData = 0;
-	mInput.mi.time = 0;
-	mInput.mi.dwExtraInfo = 0;
+    if (shift)
+        shiftState = 0x01;
 
-	mInput.mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTDOWN);
-	::SendInput(1, &mInput, sizeof(mInput));
+    if (ctrl)
+        shiftState |= 0x02;
 
-	Sleep(10);
+    if (alt)
+        shiftState |= 0x04;
 
-	mInput.mi.dwFlags = (MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_LEFTUP);
-	::SendInput(1, &mInput, sizeof(INPUT));
+    return shiftState;
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::BtnStartClick(TObject *Sender)
 {
+    bool showInvalidValueMsg = false;
+
     try
     {
+        ClickCount = 0;
         BtnStart->Enabled = false;
         double timeValue = EditTimeValue->Text.ToDouble();
 
-        if (CBoxTimeFrame->ItemIndex == 0)
-            TimerClick->Interval = timeValue;
-        else if (CBoxTimeFrame->ItemIndex == 1)
-            TimerClick->Interval = timeValue * 1000;
-        else if (CBoxTimeFrame->ItemIndex == 2)
-            TimerClick->Interval = timeValue * 60 * 1000;
+        if (timeValue <= 0)
+        {
+            showInvalidValueMsg = true;
+        }
+        else
+        {
+            if (CBoxTimeFrame->ItemIndex == 0)
+                TimerClick->Interval = timeValue;
+            else if (CBoxTimeFrame->ItemIndex == 1)
+                TimerClick->Interval = timeValue * 1000;
+            else if (CBoxTimeFrame->ItemIndex == 2)
+                TimerClick->Interval = timeValue * 60 * 1000;
 
-        TimerClick->Enabled = true;
-        SetFormToProcessStarted();
+            TimerClick->Enabled = true;
+            SetFormToProcessStarted();
+        }
     }
     catch(...)
     {
-        MsgDlg("Please enter a valid time value.", TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
-        BtnStart->Enabled = true;
+        showInvalidValueMsg = true;
+    }
+
+    if (showInvalidValueMsg)
+    {
+        MsgDlg("Please enter a time value greater than zero.", TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
+        SetFormToProcessStopped();
     }
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject *Sender)
 {
-    MouseLeftClick();
+    int clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
+
+    if (TimerClick->Interval < clickUpDelayMS)
+        TimerClick->Interval = clickUpDelayMS;
+    
+    ClickCount++;
+
+    if (RB_MouseLeft->Checked)
+        TMouseTool::MouseLeftClick();
+    else 
+        TMouseTool::MouseRightClick();
+        
+    StatusBar1->Panels->Items[0]->Text = UnicodeString(L"Clicks: ") + IntToStr(ClickCount);
 }
 //---------------------------------------------------------------------------
 
@@ -282,6 +338,19 @@ void __fastcall TFrmMain::CBoxTimeFrameChange(TObject *Sender)
     }
 
     CBoxTimeFrame->Tag = CBoxTimeFrame->ItemIndex;
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::BtnAboutClick(TObject *sender)
+{
+    FrmAbout->ShowModal();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::BtnExitClick(TObject *sender)
+{
+    if (FrmMain->BtnStop->Enabled)
+        FrmMain->BtnStopClick(sender);
+
+    Application->Terminate();    
 }
 //---------------------------------------------------------------------------
 
