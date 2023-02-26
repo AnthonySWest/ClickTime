@@ -24,7 +24,7 @@
 
 #ignore folders
 [Ll]ogs/
-[Rr]elease/Resources/
+[Rr]elease/
 
 #C++ Builder
 *.bpl
