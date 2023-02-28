@@ -70,17 +70,29 @@ public:
 
     //For trim functions, see: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 	static void TrimLeft(std::string& s);
+    static void TrimLeft(std::string& s, const unsigned char trimChar, bool trim_isspace);
 	static void TrimLeft(std::wstring& s);
+    static void TrimLeft(std::wstring& s, const wchar_t trimChar, bool trim_iswspace);
 	static void TrimRight(std::string& s);
+    static void TrimRight(std::string& s, const unsigned char trimChar, bool trim_isspace);
 	static void TrimRight(std::wstring& s);
+    static void TrimRight(std::wstring& s, const wchar_t trimChar, bool trim_iswspace);
 	static void Trim(std::string& s);
+    static void Trim(std::string& s, const unsigned char trimChar, bool trim_isspace);
 	static void Trim(std::wstring& s);
+    static void Trim(std::wstring& s, const wchar_t trimChar, bool trim_iswspace);
 	static std::string TrimLeft_Copy(std::string s);
+    static std::string TrimLeft_Copy(std::string s, const unsigned char trimChar, bool trim_isspace);
 	static std::wstring TrimLeft_Copy(std::wstring s);
+    static std::wstring TrimLeft_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace);
 	static std::string TrimRight_Copy(std::string s);
+    static std::string TrimRight_Copy(std::string s, const unsigned char trimChar, bool trim_isspace);
 	static std::wstring TrimRight_Copy(std::wstring s);
+    static std::wstring TrimRight_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace);
 	static std::string Trim_Copy(std::string s);
+    static std::string Trim_Copy(std::string s, const unsigned char trimChar, bool trim_isspace);
 	static std::wstring Trim_Copy(std::wstring s);
+    static std::wstring Trim_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace);
 
 	static bool IsEmptyOrWhiteSpace(const std::string &s);
 	static bool IsEmptyOrWhiteSpace(const std::wstring &s);

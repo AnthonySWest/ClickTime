@@ -301,13 +301,41 @@ void TStrTool::TrimLeft(std::string& s)
 //---------------------------------------------------------------------------
 // -Static
 // -Trims in place
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+void TStrTool::TrimLeft(std::string& s, const unsigned char trimChar, bool trim_isspace)
+{
+	s.erase(s.begin(),
+		std::find_if(s.begin(), s.end(), [trimChar, trim_isspace](unsigned char ch)
+			{
+				return trim_isspace ? (!std::isspace(ch) && trimChar != ch) : trimChar != ch;
+			})
+		);
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Trims in place
 // -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 void TStrTool::TrimLeft(std::wstring& s)
 {
 	s.erase(s.begin(),
 		std::find_if(s.begin(), s.end(), [](wchar_t ch)
 			{
-				return !iswspace(ch);
+				return !std::iswspace(ch);
+			})
+	);
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Trims in place
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+void TStrTool::TrimLeft(std::wstring& s, const wchar_t trimChar, bool trim_iswspace)
+{
+	s.erase(s.begin(),
+		std::find_if(s.begin(), s.end(), [trimChar, trim_iswspace](wchar_t ch)
+			{
+				return trim_iswspace ? (!std::iswspace(ch) && trimChar != ch) : trimChar != ch;
 			})
 	);
 }
@@ -325,18 +353,45 @@ void TStrTool::TrimRight(std::string& s)
 //---------------------------------------------------------------------------
 // -Static
 // -Trims in place
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+void TStrTool::TrimRight(std::string& s, const unsigned char trimChar, bool trim_isspace)
+{
+    //Note: Can use [trimChar, trim_isspace] in the lambda, or just [=] to get access to
+    //trimChar and trim_isspace.
+	s.erase(std::find_if(s.rbegin(), s.rend(), [=](unsigned char ch)
+		{
+			return trim_isspace ? (!std::isspace(ch) && trimChar != ch) : trimChar != ch;
+		}).base(), s.end());
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Trims in place
 // -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 void TStrTool::TrimRight(std::wstring& s)
 {
 	s.erase(std::find_if(s.rbegin(), s.rend(), [](wchar_t ch)
 		{
-			return !iswspace(ch);
+			return !std::iswspace(ch);
+		}).base(), s.end());
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Trims in place
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+void TStrTool::TrimRight(std::wstring& s, const wchar_t trimChar, bool trim_iswspace)
+{
+    //Note: Can use [trimChar, trim_iswspace] in the lambda, or just [=] to get access to
+    //trimChar and trim_iswspace.
+	s.erase(std::find_if(s.rbegin(), s.rend(), [=](wchar_t ch)
+		{
+			return trim_iswspace ? (!std::iswspace(ch) && trimChar != ch) : trimChar != ch;
 		}).base(), s.end());
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Trims in place, left and right
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 void TStrTool::Trim(std::string& s)
 {
 	TrimLeft(s);
@@ -345,7 +400,16 @@ void TStrTool::Trim(std::string& s)
 //---------------------------------------------------------------------------
 // -Static
 // -Trims in place, left and right
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+void TStrTool::Trim(std::string& s, const unsigned char trimChar, bool trim_isspace)
+{
+	TrimLeft(s, trimChar, trim_isspace);
+	TrimRight(s, trimChar, trim_isspace);
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Trims in place, left and right
 void TStrTool::Trim(std::wstring& s)
 {
 	TrimLeft(s);
@@ -353,8 +417,17 @@ void TStrTool::Trim(std::wstring& s)
 }
 //---------------------------------------------------------------------------
 // -Static
+// -Trims in place, left and right
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+void TStrTool::Trim(std::wstring& s, const wchar_t trimChar, bool trim_iswspace)
+{
+	TrimLeft(s, trimChar, trim_iswspace);
+	TrimRight(s, trimChar, trim_iswspace);
+}
+//---------------------------------------------------------------------------
+// -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 std::string TStrTool::TrimLeft_Copy(std::string s)
 {
 	TrimLeft(s);
@@ -363,7 +436,16 @@ std::string TStrTool::TrimLeft_Copy(std::string s)
 //---------------------------------------------------------------------------
 // -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+std::string TStrTool::TrimLeft_Copy(std::string s, const unsigned char trimChar, bool trim_isspace)
+{
+	TrimLeft(s, trimChar, trim_isspace);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
 std::wstring TStrTool::TrimLeft_Copy(std::wstring s)
 {
 	TrimLeft(s);
@@ -372,7 +454,16 @@ std::wstring TStrTool::TrimLeft_Copy(std::wstring s)
 //---------------------------------------------------------------------------
 // -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+std::wstring TStrTool::TrimLeft_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace)
+{
+	TrimLeft(s, trimChar, trim_iswspace);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
 std::string TStrTool::TrimRight_Copy(std::string s)
 {
 	TrimRight(s);
@@ -381,7 +472,16 @@ std::string TStrTool::TrimRight_Copy(std::string s)
 //---------------------------------------------------------------------------
 // -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+std::string TStrTool::TrimRight_Copy(std::string s, const unsigned char trimChar, bool trim_isspace)
+{
+	TrimRight(s, trimChar, trim_isspace);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
 std::wstring TStrTool::TrimRight_Copy(std::wstring s)
 {
 	TrimRight(s);
@@ -390,7 +490,16 @@ std::wstring TStrTool::TrimRight_Copy(std::wstring s)
 //---------------------------------------------------------------------------
 // -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+std::wstring TStrTool::TrimRight_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace)
+{
+	TrimRight(s, trimChar, trim_iswspace);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
 std::string TStrTool::Trim_Copy(std::string s)
 {
 	Trim(s);
@@ -399,10 +508,29 @@ std::string TStrTool::Trim_Copy(std::string s)
 //---------------------------------------------------------------------------
 // -Static
 // -Returns a trimmed copy, not affecting original
-// -See: https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_issspace', if true, will also trim spaces.
+std::string TStrTool::Trim_Copy(std::string s, const unsigned char trimChar, bool trim_isspace)
+{
+	Trim(s, trimChar, trim_isspace);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
 std::wstring TStrTool::Trim_Copy(std::wstring s)
 {
 	Trim(s);
+	return s;
+}
+//---------------------------------------------------------------------------
+// -Static
+// -Returns a trimmed copy, not affecting original
+// -'trimChar' is a character, other than a space, to trim.
+// -'trim_iswsspace', if true, will also trim spaces.
+std::wstring TStrTool::Trim_Copy(std::wstring s, const wchar_t trimChar, bool trim_iswspace)
+{
+	Trim(s, trimChar, trim_iswspace);
 	return s;
 }
 //---------------------------------------------------------------------------
@@ -738,7 +866,7 @@ bool TStrTool::URL_Split(const std::string& url, std::string* hostUtf8, std::str
 		walker += httpPrefix.length();
 	else if (strncmpi(walker, httpsPrefix.c_str(), httpsPrefix.length()) == 0)
 		walker += httpsPrefix.length();
-#endif	
+#endif
 
 	//find "/", which marks the end of the host part
 	while (*walker && *walker != '/' && *walker != '\\')
@@ -792,7 +920,7 @@ std::string TStrTool::URL_EncodeUtf8(const std::string& valueUtf8, bool useUpper
 {
 	if (valueUtf8.length() == 0)
 		return "";
-	
+
 	const char* hexP = useUpperCaseHex ? HEX_UPPER : HEX_LOWER;
 
 	const size_t maxEncodedCharWidth = 3; //e.g. "%FF"
@@ -800,7 +928,7 @@ std::string TStrTool::URL_EncodeUtf8(const std::string& valueUtf8, bool useUpper
 	char* buff = new char[buffSize];
 	char* buffP = buff;
 	const char* walker = valueUtf8.c_str();
-	
+
 	while (*walker)
 	{
 		if (isalnum(*walker) ||
@@ -839,7 +967,7 @@ std::string TStrTool::URL_DecodeUtf8(const std::string& encodedStr, bool* invali
 	char* buff = new char[buffSize];
 	char* buffP = buff;
 	const char* walker = encodedStr.c_str();
-	
+
 	while (*walker)
 	{
 		if (*walker == URL_HEX_ESCAPE)
@@ -857,7 +985,7 @@ std::string TStrTool::URL_DecodeUtf8(const std::string& encodedStr, bool* invali
 					*invalidHexEncountered = true;
 				continue;
 			}
-			
+
 			//hex singles are valid - combine into a byte
 			*buffP++ = (high << 4) | low;
 			walker += 2;
@@ -884,3 +1012,4 @@ std::string TStrTool::URL_DecodeUtf8(const std::string& encodedStr, bool* invali
 //---------------------------------------------------------------------------
 
 } //end namespace
+
