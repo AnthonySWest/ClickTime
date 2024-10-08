@@ -95,7 +95,7 @@
         <IncludePath>..\Source\;..\Source\Subroutines\;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>..\Source\;..\Source\Subroutines\;..\;..\Libs\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
         <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -111,11 +111,11 @@
         <BT_BuildType>Debug</BT_BuildType>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <BCC_PCHName_Clang>ClickTimePCH1.h</BCC_PCHName_Clang>
         <OutputExt>x86.exe</OutputExt>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
         <UWP_CppLogo44>..\Resource\Auto_clicker_44x44.png</UWP_CppLogo44>
+        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <UWP_CppLogo150>..\Resource\Auto_clicker_150x150.png</UWP_CppLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -127,19 +127,18 @@
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <UWP_CppLogo44>..\Resource\Auto_clicker_44x44.png</UWP_CppLogo44>
+        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <UWP_CppLogo150>..\Resource\Auto_clicker_150x150.png</UWP_CppLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64x)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BCC_PCHName_Clang>ClickTimePCH1.h</BCC_PCHName_Clang>
         <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <UWP_CppLogo44>..\Resource\Auto_clicker_44x44.png</UWP_CppLogo44>
         <UWP_CppLogo150>..\Resource\Auto_clicker_150x150.png</UWP_CppLogo150>
         <BCC_EnableBatchCompilation>true</BCC_EnableBatchCompilation>
@@ -171,7 +170,7 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
         <ILINK_LibraryPath>$(BDSLIB)\$(PLATFORM)$(CC_SUFFIX)\debug;$(ILINK_LibraryPath)</ILINK_LibraryPath>
-        <LinkPackageImports>rtl.bpi;vcl.bpi</LinkPackageImports>
+        <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -179,7 +178,6 @@
         <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win64x)'!=''">
-        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
         <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
     </PropertyGroup>
@@ -191,6 +189,7 @@
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <BCC_UseClassicCompiler>false</BCC_UseClassicCompiler>
+        <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64)'!=''">
         <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
@@ -198,8 +197,8 @@
         <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_2_Win64x)'!=''">
-        <AppEnableRuntimeThemes>true</AppEnableRuntimeThemes>
-        <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
+        <LinkPackageStatics>rtl.lib;vcl.lib</LinkPackageStatics>
+        <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
     </PropertyGroup>
     <ItemGroup>
         <CppCompile Include="ClickTime.cpp">
@@ -270,10 +269,10 @@
                     <Source Name="MainSource">ClickTime.cpp</Source>
                 </Source>
                 <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k290.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp290.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
+                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
                 </Excluded_Packages>
             </CPlusPlusBuilder.Personality>
             <Platforms>
