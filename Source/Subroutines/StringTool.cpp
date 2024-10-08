@@ -856,7 +856,7 @@ bool TStrTool::URL_Split(const std::string& url, std::string* hostUtf8, std::str
 	const char* walker = urlStart;
 
 	//skip http/s prefix, if there is one
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || (defined(__clang__) && __clang_major__ >= 15) // Win64x
 	if (_strnicmp(walker, httpPrefix.c_str(), httpPrefix.length()) == 0)
 		walker += httpPrefix.length();
 	else if (_strnicmp(walker, httpsPrefix.c_str(), httpsPrefix.length()) == 0)
