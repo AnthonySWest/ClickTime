@@ -1,53 +1,67 @@
 //---------------------------------------------------------------------------
+// MainForm.cpp
+// Author: Anthony West - ASW Software
+//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
 
+//---------------------------------------------------------------------------
 #include "MainForm.h"
+#pragma package(smart_init)
+#pragma resource "*.dfm"
+//---------------------------------------------------------------------------
 #include "AboutForm.h"
 #include "StringTool.h"
 #include "MouseTool.h"
 //---------------------------------------------------------------------------
-#pragma package(smart_init)
-#pragma resource "*.dfm"
 
 using namespace Subroutines;
 
 //---------------------------------------------------------------------------
-// -A messagebox wrapper
+// MsgDlg
+//
+// A messagebox wrapper
 int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType,
-	TMsgDlgButtons buttons)
+    TMsgDlgButtons buttons)
 {
-TForm *msgDlg = CreateMessageDialog(msg, dlgType, buttons);
-TModalResult mRes;
+    TForm *msgDlg = CreateMessageDialog(msg, dlgType, buttons);
+    TModalResult mRes;
 
-	msgDlg->Color = clWindow;
+    msgDlg->Color = clWindow;
 
-	if (title.Length() > 0)
-		msgDlg->Caption = title;
-	else
-		msgDlg->Caption = TFrmMain::AppFriendlyName;
-//	msgDlg->GlassFrame->Bottom = 40;
-//	msgDlg->GlassFrame->Enabled = true;
-//	msgDlg->Font->Name = "Verdana";
-//	msgDlg->Font->Size = 10;
-//	msgDlg->Canvas->Font = msgDlg->Font;
-//	msgDlg->Scaled = false;
+    if (title.Length() > 0)
+        msgDlg->Caption = title;
+    else
+        msgDlg->Caption = TFrmMain::AppFriendlyName;
 
-	mRes = msgDlg->ShowModal();
-	delete msgDlg;
-	return mRes;
+//    msgDlg->GlassFrame->Bottom = 40;
+//    msgDlg->GlassFrame->Enabled = true;
+//    msgDlg->Font->Name = "Verdana";
+//    msgDlg->Font->Size = 10;
+//    msgDlg->Canvas->Font = msgDlg->Font;
+//    msgDlg->Scaled = false;
+
+    mRes = msgDlg->ShowModal();
+    delete msgDlg;
+    return mRes;
 }
+
+//---------------------------------------------------------------------------
+
+// //////////////////////////////////////////////////////////////////////////
+// TFrmMain class
+// //////////////////////////////////////////////////////////////////////////
 
 TFrmMain *FrmMain;
 
 AnsiString TFrmMain::AppFriendlyName    = "ClickTime";
 AnsiString TFrmMain::CompanyName        = "ASW Software";
 
-UnicodeString TFrmMain::DirApp			= L"";
+UnicodeString TFrmMain::DirApp            = L"";
 
-//UnicodeString TFrmMain::FileLog			= L"_CTGeneral.txt";
-UnicodeString TFrmMain::FileMainEXE		= L""; //set from INI
+//UnicodeString TFrmMain::FileLog            = L"_CTGeneral.txt";
+UnicodeString TFrmMain::FileMainEXE        = L""; //set from INI
 
 //this name is the default name only - app checks first for an ini with same base name as app
 UnicodeString TFrmMain::FileSettingsINI = L"ClickTime.ini";
@@ -64,15 +78,14 @@ System::Word TFrmMain::AppStart_Sec;
 System::Word TFrmMain::AppStart_MSec;
 
 #ifdef _DEBUG
-	UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " - Debug Compile -";
+    UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " - Debug Compile -";
 #else
-	UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " -";
+    UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " -";
 #endif
-//---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
-__fastcall TFrmMain::TFrmMain(TComponent* Owner)
-    : TForm(Owner)
+__fastcall TFrmMain::TFrmMain(TComponent* owner)
+    : TForm(owner)
 {
     WinKeyEventHook = nullptr;
     ClickCount = 0;
@@ -83,23 +96,23 @@ __fastcall TFrmMain::TFrmMain(TComponent* Owner)
     Caption = Caption + " - " + TFrmMain::CompanyName + " - " + AppVersion.ToStrVer().c_str();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::FormCreate(TObject *Sender)
+void __fastcall TFrmMain::FormCreate(TObject* /*sender*/)
 {
     InitializeKeyEventHook();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::FormDestroy(TObject *Sender)
+void __fastcall TFrmMain::FormDestroy(TObject* /*sender*/)
 {
     ShutdownKeyEventHook();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams &params)
 {
-	TForm::CreateParams(params); // inherited
-	//params.ExStyle = params.ExStyle | WS_EX_NOACTIVATE;
+    TForm::CreateParams(params); // inherited
+    //params.ExStyle = params.ExStyle | WS_EX_NOACTIVATE;
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::FormCloseQuery(TObject *Sender, bool &CanClose)
+void __fastcall TFrmMain::FormCloseQuery(TObject* /*sender*/, bool& /*canClose*/)
 {
     TimerClick->Enabled = false;
 }
@@ -128,12 +141,12 @@ void TFrmMain::SetFormToProcessStopped()
 // sets up the event hook.
 void TFrmMain::InitializeKeyEventHook()
 {
-	//::CoInitialize(NULL);
-	WinKeyEventHook = ::SetWindowsHookExW(
-		WH_KEYBOARD_LL,     //type of hook procedure to be installed
-		LowLevelKeyboardProc, // The callback.
-		NULL,               // (HINSTANCE) Handle to DLL (if NULL, current process is used).
-		0);                 // (DWORD) identifier of the thread with which the hook procedure is to be associated
+    //::CoInitialize(NULL);
+    WinKeyEventHook = ::SetWindowsHookExW(
+        WH_KEYBOARD_LL,     //type of hook procedure to be installed
+        LowLevelKeyboardProc, // The callback.
+        NULL,               // (HINSTANCE) Handle to DLL (if NULL, current process is used).
+        0);                 // (DWORD) identifier of the thread with which the hook procedure is to be associated
 
     if (NULL == WinKeyEventHook)
     {
@@ -148,9 +161,9 @@ void TFrmMain::InitializeKeyEventHook()
 // Unhooks the event
 void TFrmMain::ShutdownKeyEventHook()
 {
-	::UnhookWindowsHookEx(WinKeyEventHook);
-	WinKeyEventHook = nullptr;
-	//::CoUninitialize();
+    ::UnhookWindowsHookEx(WinKeyEventHook);
+    WinKeyEventHook = nullptr;
+    //::CoUninitialize();
 }
 //---------------------------------------------------------------------------
 //see: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms644985(v=vs.85)
@@ -239,7 +252,7 @@ DWORD TFrmMain::GetShiftStateMask(bool shift, bool ctrl, bool alt)
     return shiftState;
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnStartClick(TObject *Sender)
+void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 {
     bool showInvalidValueMsg = false;
 
@@ -278,7 +291,7 @@ void __fastcall TFrmMain::BtnStartClick(TObject *Sender)
     }
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::TimerClickTimer(TObject *Sender)
+void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
     int clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
 
@@ -296,13 +309,13 @@ void __fastcall TFrmMain::TimerClickTimer(TObject *Sender)
 }
 //---------------------------------------------------------------------------
 
-void __fastcall TFrmMain::BtnStopClick(TObject *Sender)
+void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 {
     TimerClick->Enabled = false;
     SetFormToProcessStopped();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::CBoxTimeFrameChange(TObject *Sender)
+void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
 {
     try
     {
@@ -340,17 +353,17 @@ void __fastcall TFrmMain::CBoxTimeFrameChange(TObject *Sender)
     CBoxTimeFrame->Tag = CBoxTimeFrame->ItemIndex;
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnAboutClick(TObject *sender)
+void __fastcall TFrmMain::BtnAboutClick(TObject* /*sender*/)
 {
     FrmAbout->ShowModal();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnExitClick(TObject *sender)
+void __fastcall TFrmMain::BtnExitClick(TObject* sender)
 {
     if (FrmMain->BtnStop->Enabled)
         FrmMain->BtnStopClick(sender);
 
-    Application->Terminate();    
+    Application->Terminate();
 }
 //---------------------------------------------------------------------------
 

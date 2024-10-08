@@ -1,4 +1,7 @@
 //---------------------------------------------------------------------------
+// MainForm.h
+// Author: Anthony West - ASW Software
+//---------------------------------------------------------------------------
 
 #ifndef MainFormH
 #define MainFormH
@@ -13,9 +16,13 @@
 #include <Vcl.Menus.hpp>
 #include <Vcl.ComCtrls.hpp>
 //---------------------------------------------------------------------------
+
+// //////////////////////////////////////////////////////////////////////////
+// TFrmMain class
+// //////////////////////////////////////////////////////////////////////////
 class TFrmMain : public TForm
 {
-__published:	// IDE-managed Components
+__published: // IDE-managed Components
     TBitBtn *BtnStart;
     TTimer *TimerClick;
     TBitBtn *BtnStop;
@@ -42,11 +49,11 @@ __published:	// IDE-managed Components
     void __fastcall FormCreate(TObject *Sender);
     void __fastcall BtnAboutClick(TObject *Sender);
     void __fastcall BtnExitClick(TObject *Sender);
-private:	// User declarations
+private: // User declarations
 
     // /////////// Static vars go here ////////////////////////////
 
-	// /////////// Non-static vars go here ////////////////////////////
+    // /////////// Non-static vars go here ////////////////////////////
 
     HHOOK WinKeyEventHook;
 
@@ -59,13 +66,13 @@ private:	// User declarations
 	// /////////// Functions go here ////////////////////////////
 
 	virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
-	
+
     void InitializeKeyEventHook();
-	void ShutdownKeyEventHook();
+    void ShutdownKeyEventHook();
 
 
-public:		// User declarations
-    __fastcall TFrmMain(TComponent* Owner);
+public: // User declarations
+    __fastcall TFrmMain(TComponent* owner);
 
     // /////////// Static vars go here ////////////////////////////
 
@@ -77,23 +84,23 @@ public:		// User declarations
     static UnicodeString FileMainEXE;
     static UnicodeString FileSettingsINI;
 
-	static UnicodeString LogID;
+    static UnicodeString LogID;
     static Subroutines::TVersion AppVersion;
 
     static unsigned short AppStart_Day, AppStart_Month, AppStart_Year;
-	static System::Word AppStart_Hour, AppStart_Min, AppStart_Sec, AppStart_MSec;
+    static System::Word AppStart_Hour, AppStart_Min, AppStart_Sec, AppStart_MSec;
 
     // /////////// Non-static vars go here ////////////////////////////
 
 
-	// /////////// Functions go here ////////////////////////////
+    // /////////// Functions go here ////////////////////////////
     void SetFormToProcessStarted();
     void SetFormToProcessStopped();
 
     static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
     static DWORD GetShiftStateMask(bool shift, bool ctrl, bool alt);
 
-	// /////////// Properties go here ////////////////////////////
+    // /////////// Properties go here ////////////////////////////
 
 };
 //---------------------------------------------------------------------------
@@ -102,4 +109,4 @@ extern PACKAGE TFrmMain *FrmMain;
 int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType, TMsgDlgButtons buttons);
 
 //---------------------------------------------------------------------------
-#endif
+#endif // #ifndef MainFormH

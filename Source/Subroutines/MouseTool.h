@@ -1,7 +1,10 @@
-//Author: Anthony West
-//Contains routines for manipulating the mouse.
-// -Every attempt should be made to keep this module at least Windows portable.
-
+//---------------------------------------------------------------------------
+// MouseTool.h
+// Author: Anthony West - ASW Software
+//
+// Contains routines for manipulating the mouse.
+//
+// Every attempt should be made to keep this module at least Windows portable.
 //---------------------------------------------------------------------------
 
 #ifndef MouseToolH
@@ -11,51 +14,49 @@
 namespace Subroutines
 {
 
-//for version comparison checking
+/////////////////////////////////////////////////////////////////////////////
+// TMouseTool class
+/////////////////////////////////////////////////////////////////////////////
 class TMouseTool
 {
 typedef TMouseTool ThisType;
 
 public:
-
-	////// only const static variables allowed in this public - see second public for regular stuff //////
+    ////// only const static variables allowed in this public - see second public for regular stuff //////
 
     static const int Click_DefaultUpDelayMS = 10;
 
 protected:
+    ////// static variables //////
 
-	////// static variables //////
+    ////// variables //////
 
-	////// variables //////
-
-	////// functions //////
+    ////// functions //////
 
 private:
+    ////// static variables //////
 
-	////// static variables //////
+    ////// variables //////
 
-	////// variables //////
-
-	////// functions //////
-	void Destroy_Private();
-	bool Reset_Private();
+    ////// functions //////
+    void Destroy_Private();
+    bool Reset_Private();
 
 public:
-	TMouseTool();
-	~TMouseTool();
+    TMouseTool();
+    ~TMouseTool();
 
-	////// variables //////
+    ////// variables //////
 
-	////// functions //////
-	virtual void Destroy(); //calls Destroy_Private()
-	virtual bool Reset(); //calls Reset_Private() - It is good practice for the constructor to never call a virtual function
+    ////// functions //////
+    virtual void Destroy(); //calls Destroy_Private()
+    virtual bool Reset(); //calls Reset_Private() - It is good practice for the constructor to never call a virtual function
 
     static bool MouseLeftClick(int clickUpDelayMS=Click_DefaultUpDelayMS);
-	static bool MouseRightClick(int clickUpDelayMS=Click_DefaultUpDelayMS);
+    static bool MouseRightClick(int clickUpDelayMS=Click_DefaultUpDelayMS);
     static bool MoveMouse(int x, int y);
-
 };
 
+} // namespace Subroutines
 
-} //end namepsace
-#endif
+#endif // #ifndef MouseToolH

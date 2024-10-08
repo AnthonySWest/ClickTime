@@ -1,5 +1,8 @@
-//Author: Anthony West
-//See header for info.
+//---------------------------------------------------------------------------
+// AppTool.cpp
+// Author: Anthony West - ASW Software
+//
+// See header for info.
 //---------------------------------------------------------------------------
 
 #pragma hdrstop
@@ -10,12 +13,6 @@
     #include "EasyLogger.h"
 #endif
 
-
-//---------------------------------------------------------------------------
-#pragma package(smart_init)
-
-//---------------------------------------------------------------------------
-
 //---------------------------------------------------------------------------
 
 namespace Subroutines
@@ -24,43 +21,43 @@ namespace Subroutines
 //---------------------- class statics --------------------------------------
 
 /////////////////////////////////////////////////////////////////////////////
-//					         TAppTool class
+// TAppTool class
 /////////////////////////////////////////////////////////////////////////////
 
 //---------------------------------------------------------------------------
 TAppTool::TAppTool()
 {
-	this->Reset_Private();
+    Reset_Private();
 }
 //---------------------------------------------------------------------------
 TAppTool::~TAppTool()
 {
-	this->Destroy_Private();
+    Destroy_Private();
 }
 //---------------------------------------------------------------------------
 void TAppTool::Destroy_Private()
 {
-	//code specific to this level of inheritance goes here - no virtual functions can be called here
+    //code specific to this level of inheritance goes here - no virtual functions can be called here
 }
 //---------------------------------------------------------------------------
 void TAppTool::Destroy() //virtual
 {
-	this->Destroy_Private();
+    Destroy_Private();
 }
 //---------------------------------------------------------------------------
 bool TAppTool::Reset_Private()
 {
-	//code specific to this level of inheritance goes here - no virtual functions can be called here
-	this->Destroy_Private();
+    //code specific to this level of inheritance goes here - no virtual functions can be called here
+    Destroy_Private();
 
-	//reset class vars here
+    //reset class vars here
 
-	return true;
+    return true;
 }
 //---------------------------------------------------------------------------
 bool TAppTool::Reset() //virtual
 {
-	return this->Reset_Private();
+    return Reset_Private();
 }
 //---------------------------------------------------------------------------
 // -Static
@@ -72,10 +69,10 @@ std::string TAppTool::GetAppPathA()
     int numCharsWritten;
     char* appNamePath = new char[maxFileNameLen + 1];
     DWORD lenCopied;
-	HINSTANCE hInstance = ::GetModuleHandle(NULL);
+    HINSTANCE hInstance = ::GetModuleHandle(NULL);
 
     *appNamePath = '\0';
-	lenCopied = ::GetModuleFileNameA(hInstance, appNamePath, static_cast<DWORD>(maxFileNameLen));
+    lenCopied = ::GetModuleFileNameA(hInstance, appNamePath, static_cast<DWORD>(maxFileNameLen));
 
     if (maxFileNameLen == lenCopied || 0 == lenCopied)
     {
@@ -87,7 +84,7 @@ std::string TAppTool::GetAppPathA()
 
     *longDir = '\0';
     //make sure not DOS path
-	lenCopied = ::GetLongPathNameA(appNamePath, longDir, static_cast<DWORD>(maxFileNameLen));
+    lenCopied = ::GetLongPathNameA(appNamePath, longDir, static_cast<DWORD>(maxFileNameLen));
 
     //buffer to small - resize and try again (should never happen, given the original buffer size)
     if (lenCopied >= maxFileNameLen)
@@ -104,12 +101,12 @@ std::string TAppTool::GetAppPathA()
     if (0 == lenCopied) //error condition
         resultPath = "";
     else
-    	resultPath = longDir;
+        resultPath = longDir;
 
-	delete [] appNamePath;
+    delete [] appNamePath;
     delete [] longDir;
 
-	return resultPath;
+    return resultPath;
 }
 //---------------------------------------------------------------------------
 // -Static
@@ -121,10 +118,10 @@ std::wstring TAppTool::GetAppPathW()
     int numCharsWritten;
     wchar_t* appNamePath = new wchar_t[maxFileNameLen + 1];
     DWORD lenCopied;
-	HINSTANCE hInstance = ::GetModuleHandle(NULL);
+    HINSTANCE hInstance = ::GetModuleHandle(NULL);
 
     *appNamePath = L'\0';
-	lenCopied = ::GetModuleFileNameW(hInstance, appNamePath, static_cast<DWORD>(maxFileNameLen));
+    lenCopied = ::GetModuleFileNameW(hInstance, appNamePath, static_cast<DWORD>(maxFileNameLen));
 
     if (maxFileNameLen == lenCopied || 0 == lenCopied)
     {
@@ -136,7 +133,7 @@ std::wstring TAppTool::GetAppPathW()
 
     *longDir = L'\0';
     //make sure not DOS path
-	lenCopied = ::GetLongPathNameW(appNamePath, longDir, static_cast<DWORD>(maxFileNameLen));
+    lenCopied = ::GetLongPathNameW(appNamePath, longDir, static_cast<DWORD>(maxFileNameLen));
 
     //buffer to small - resize and try again (should never happen, given the original buffer size)
     if (lenCopied >= maxFileNameLen)
@@ -153,19 +150,22 @@ std::wstring TAppTool::GetAppPathW()
     if (0 == lenCopied) //error condition
         resultPath = L"";
     else
-    	resultPath = longDir;
+        resultPath = longDir;
 
-	delete [] appNamePath;
+    delete [] appNamePath;
     delete [] longDir;
 
-	return resultPath;
+    return resultPath;
 }
 //---------------------------------------------------------------------------
-bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer,
-    WORD* outMinorVer, WORD* outBuild, WORD* outRevision)
+bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer, WORD* outMinorVer, WORD* outBuild,
+    WORD* outRevision)
 {
-    if (nullptr == appOrDLLPath || nullptr == outMajorVer || nullptr == outMinorVer || nullptr == outBuild || nullptr == outRevision)
+    if (nullptr == appOrDLLPath || nullptr == outMajorVer || nullptr == outMinorVer || nullptr == outBuild ||
+        nullptr == outRevision)
+    {
         return false;
+    }
 
     //Note: code from MSDN, with a few modifications. Uses Winver.h.
 
@@ -174,33 +174,36 @@ bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer,
     LPVOID lpData;
     VS_FIXEDFILEINFO *pFileInfo;
 
-	dwLen = ::GetFileVersionInfoSizeA(appOrDLLPath, &dwDummy);
-	if (!dwLen)
-		return false;
+    dwLen = ::GetFileVersionInfoSizeA(appOrDLLPath, &dwDummy);
+    if (!dwLen)
+        return false;
 
-	lpData = (LPVOID)malloc(dwLen);
-	if (!lpData)
-		return false;
+    lpData = (LPVOID)malloc(dwLen);
+    if (!lpData)
+        return false;
 
-	bool result = ::GetFileVersionInfoA(appOrDLLPath, 0, dwLen, lpData);
+    bool result = ::GetFileVersionInfoA(appOrDLLPath, 0, dwLen, lpData);
 
     if(result && ::VerQueryValueA(lpData, "\\",(LPVOID *)&pFileInfo,(PUINT)&bufLen ))
-	{
-		*outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
-		*outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
-		*outBuild = HIWORD(pFileInfo->dwFileVersionLS);
-		*outRevision = LOWORD(pFileInfo->dwFileVersionLS);
-	}
+    {
+        *outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
+        *outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
+        *outBuild = HIWORD(pFileInfo->dwFileVersionLS);
+        *outRevision = LOWORD(pFileInfo->dwFileVersionLS);
+    }
 
-	free (lpData);
-	return result;
+    free (lpData);
+    return result;
 }
 //---------------------------------------------------------------------------
-bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer,
-    WORD* outMinorVer, WORD* outBuild, WORD* outRevision)
+bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer, WORD* outMinorVer, WORD* outBuild,
+    WORD* outRevision)
 {
-    if (nullptr == appOrDLLPath || nullptr == outMajorVer || nullptr == outMinorVer || nullptr == outBuild || nullptr == outRevision)
+    if (nullptr == appOrDLLPath || nullptr == outMajorVer || nullptr == outMinorVer || nullptr == outBuild ||
+        nullptr == outRevision)
+    {
         return false;
+    }
 
     //Note: code from MSDN, with a few modifications. Uses Winver.h.
 
@@ -209,29 +212,29 @@ bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer,
     LPVOID lpData;
     VS_FIXEDFILEINFO *pFileInfo;
 
-	dwLen = ::GetFileVersionInfoSizeW(appOrDLLPath, &dwDummy);
-	if (!dwLen)
-		return false;
+    dwLen = ::GetFileVersionInfoSizeW(appOrDLLPath, &dwDummy);
+    if (!dwLen)
+        return false;
 
-	lpData = (LPVOID)malloc(dwLen);
-	if (!lpData)
-		return false;
+    lpData = (LPVOID)malloc(dwLen);
+    if (!lpData)
+        return false;
 
-	bool result = ::GetFileVersionInfoW(appOrDLLPath, 0, dwLen, lpData);
+    bool result = ::GetFileVersionInfoW(appOrDLLPath, 0, dwLen, lpData);
 
     if(result && ::VerQueryValueW(lpData, L"\\",(LPVOID *)&pFileInfo,(PUINT)&bufLen ))
-	{
-		*outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
-		*outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
-		*outBuild = HIWORD(pFileInfo->dwFileVersionLS);
-		*outRevision = LOWORD(pFileInfo->dwFileVersionLS);
-	}
+    {
+        *outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
+        *outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
+        *outBuild = HIWORD(pFileInfo->dwFileVersionLS);
+        *outRevision = LOWORD(pFileInfo->dwFileVersionLS);
+    }
 
-	free (lpData);
-	return result;
+    free (lpData);
+    return result;
 }
 //---------------------------------------------------------------------------
 
 //---------------------------------------------------------------------------
 
-} //end namespace
+} // namespace Subroutines

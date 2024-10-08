@@ -1,4 +1,7 @@
 //---------------------------------------------------------------------------
+// ClickTime.cpp
+// Author: Anthony West - ASW Software
+//---------------------------------------------------------------------------
 
 #include <vcl.h>
 #pragma hdrstop
@@ -38,7 +41,7 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
             TFrmMain::AppVersion.SetVersion(major, minor, build, revision);
 
         //set up dir and file locations
-		TFrmMain::DirApp = TPathTool::File_ExtractDir(exePathW).c_str();
+        TFrmMain::DirApp = TPathTool::File_ExtractDir(exePathW).c_str();
         TFrmMain::FileSettingsINI = TPathTool::Path_Combine(TFrmMain::DirApp.w_str(), TFrmMain::FileSettingsINI.w_str());
 
         //load ini (future)
@@ -48,8 +51,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdL
         Application->Title = "ClickTime";
         TStyleManager::TrySetStyle("Windows10 SlateGray");
         Application->CreateForm(__classid(TFrmMain), &FrmMain);
-         Application->CreateForm(__classid(TFrmAbout), &FrmAbout);
-         Application->Run();
+        Application->CreateForm(__classid(TFrmAbout), &FrmAbout);
+        Application->Run();
     }
     catch (Exception &exception)
     {
