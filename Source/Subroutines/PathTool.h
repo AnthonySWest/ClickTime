@@ -19,7 +19,7 @@ namespace Subroutines
 {
 
 /////////////////////////////////////////////////////////////////////////////
-// TPathTool class
+// TPathTool
 /////////////////////////////////////////////////////////////////////////////
 class TPathTool
 {
@@ -64,16 +64,16 @@ public:
     static std::string File_ExtractDir(const std::string &fileName, bool keepTrailSlash=true);
     static std::wstring File_ExtractDir(const std::wstring &fileName, bool keepTrailSlash=true);
 
-    static bool Path_IsRelative(const std::string &path);
-    static bool Path_IsRelative(const std::wstring &path);
-    static bool Path_IsEnvironment(const std::string &path);
-    static bool Path_IsEnvironment(const std::wstring &path);
-    static bool Path_IsNetwork(const std::string &path);
-    static bool Path_IsNetwork(const std::wstring &path);
+    static bool Path_IsRelative(std::string const& path);
+    static bool Path_IsRelative(std::wstring const& path);
+    static bool Path_IsEnvironment(const std::string& path);
+    static bool Path_IsEnvironment(const std::wstring& path);
+    static bool Path_IsNetwork(const std::string& path);
+    static bool Path_IsNetwork(const std::wstring& path);
     static std::string Path_Combine(const std::string& path1, const std::string& path2);
     static std::wstring Path_Combine(const std::wstring& path1, const std::wstring& path2);
-    static bool Path_ExpandEnvironmentVars(const std::string& path, std::string &dest);
-    static bool Path_ExpandEnvironmentVars(const std::wstring& path, std::wstring &dest);
+    static bool Path_ExpandEnvironmentVars(const std::string& path, std::string& dest);
+    static bool Path_ExpandEnvironmentVars(const std::wstring& path, std::wstring& dest);
     static std::string Path_ExtractFileName(const std::string& path);
     static std::wstring Path_ExtractFileName(const std::wstring& path);
     static std::string Path_ExtractFileName(const std::string& path, bool removeExtension);

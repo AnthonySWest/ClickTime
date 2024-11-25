@@ -5,23 +5,15 @@
 // See header for info.
 //---------------------------------------------------------------------------
 
-#pragma hdrstop
-
+//---------------------------------------------------------------------------
 #include "AppTool.h"
-
-#ifdef USE_ELOG
-    #include "EasyLogger.h"
-#endif
-
 //---------------------------------------------------------------------------
 
 namespace Subroutines
 {
 
-//---------------------- class statics --------------------------------------
-
 /////////////////////////////////////////////////////////////////////////////
-// TAppTool class
+// TAppTool
 /////////////////////////////////////////////////////////////////////////////
 
 //---------------------------------------------------------------------------
@@ -169,10 +161,10 @@ bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer, WORD* 
 
     //Note: code from MSDN, with a few modifications. Uses Winver.h.
 
-    DWORD dwDummy=0, dwLen;
+    DWORD dwDummy = 0, dwLen;
     UINT bufLen;
     LPVOID lpData;
-    VS_FIXEDFILEINFO *pFileInfo;
+    VS_FIXEDFILEINFO* pFileInfo;
 
     dwLen = ::GetFileVersionInfoSizeA(appOrDLLPath, &dwDummy);
     if (!dwLen)
@@ -184,7 +176,7 @@ bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer, WORD* 
 
     bool result = ::GetFileVersionInfoA(appOrDLLPath, 0, dwLen, lpData);
 
-    if(result && ::VerQueryValueA(lpData, "\\",(LPVOID *)&pFileInfo,(PUINT)&bufLen ))
+    if(result && ::VerQueryValueA(lpData, "\\", (LPVOID*)&pFileInfo, (PUINT)&bufLen ))
     {
         *outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
         *outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
@@ -192,7 +184,7 @@ bool TAppTool::GetAppVersion(const char* appOrDLLPath, WORD* outMajorVer, WORD* 
         *outRevision = LOWORD(pFileInfo->dwFileVersionLS);
     }
 
-    free (lpData);
+    free(lpData);
     return result;
 }
 //---------------------------------------------------------------------------
@@ -207,10 +199,10 @@ bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer, WOR
 
     //Note: code from MSDN, with a few modifications. Uses Winver.h.
 
-    DWORD dwDummy=0, dwLen;
+    DWORD dwDummy = 0, dwLen;
     UINT bufLen;
     LPVOID lpData;
-    VS_FIXEDFILEINFO *pFileInfo;
+    VS_FIXEDFILEINFO* pFileInfo;
 
     dwLen = ::GetFileVersionInfoSizeW(appOrDLLPath, &dwDummy);
     if (!dwLen)
@@ -222,7 +214,7 @@ bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer, WOR
 
     bool result = ::GetFileVersionInfoW(appOrDLLPath, 0, dwLen, lpData);
 
-    if(result && ::VerQueryValueW(lpData, L"\\",(LPVOID *)&pFileInfo,(PUINT)&bufLen ))
+    if(result && ::VerQueryValueW(lpData, L"\\", (LPVOID*)&pFileInfo, (PUINT)&bufLen ))
     {
         *outMajorVer = HIWORD(pFileInfo->dwFileVersionMS);
         *outMinorVer = LOWORD(pFileInfo->dwFileVersionMS);
@@ -230,7 +222,7 @@ bool TAppTool::GetAppVersion(const wchar_t* appOrDLLPath, WORD* outMajorVer, WOR
         *outRevision = LOWORD(pFileInfo->dwFileVersionLS);
     }
 
-    free (lpData);
+    free(lpData);
     return result;
 }
 //---------------------------------------------------------------------------

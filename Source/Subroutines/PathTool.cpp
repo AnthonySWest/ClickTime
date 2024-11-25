@@ -23,7 +23,7 @@ const std::string TPathTool::AlphaCharsA  =  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefgh
 const std::wstring TPathTool::AlphaCharsW = L"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
 /////////////////////////////////////////////////////////////////////////////
-// TPathTool class
+// TPathTool
 /////////////////////////////////////////////////////////////////////////////
 
 //---------------------------------------------------------------------------
@@ -64,12 +64,12 @@ bool TPathTool::Reset() //virtual
 //---------------------------------------------------------------------------
 bool TPathTool::IsDots(std::string str)
 {
-  return (str == "." || str == "..");
+    return (str == "." || str == "..");
 }
 //---------------------------------------------------------------------------
 bool TPathTool::IsDots(std::wstring str)
 {
-  return (str == L"." || str == L"..");
+    return (str == L"." || str == L"..");
 }
 //---------------------------------------------------------------------------
 // -Static
@@ -96,42 +96,42 @@ std::wstring TPathTool::File_ExtractDir(const std::wstring &fileName, bool keepT
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true if: no drive found, not a network path, and doesn't start with an environment var.
-bool TPathTool::Path_IsRelative(const std::string &path)
+bool TPathTool::Path_IsRelative(std::string const& path)
 {
     return (path.find(":") == std::string::npos) && !(path.find("%") == 0) && !(path.find("\\\\") == 0);
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true if: no drive found, not a network path, and doesn't start with an environment var.
-bool TPathTool::Path_IsRelative(const std::wstring &path)
+bool TPathTool::Path_IsRelative(std::wstring const& path)
 {
     return (path.find(L":") == std::wstring::npos) && !(path.find(L"%") == 0) && !(path.find(L"\\\\") == 0);
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true if environment var symbol found in the path.
-bool TPathTool::Path_IsEnvironment(const std::string &path)
+bool TPathTool::Path_IsEnvironment(const std::string& path)
 {
     return (path.find("%") != std::string::npos);
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true if environment var symbol found in the path.
-bool TPathTool::Path_IsEnvironment(const std::wstring &path)
+bool TPathTool::Path_IsEnvironment(const std::wstring& path)
 {
     return (path.find(L"%") != std::wstring::npos);
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true path starts with network slashes.
-bool TPathTool::Path_IsNetwork(const std::string &path)
+bool TPathTool::Path_IsNetwork(const std::string& path)
 {
     return (path.find("\\\\") == 0);
 }
 //---------------------------------------------------------------------------
 // -Static
 // -Returns true path starts with network slashes.
-bool TPathTool::Path_IsNetwork(const std::wstring &path)
+bool TPathTool::Path_IsNetwork(const std::wstring& path)
 {
     return (path.find(L"\\\\") == 0);
 }
@@ -164,7 +164,7 @@ std::string TPathTool::Path_Combine(const std::string& path1, const std::string&
         //path1 ends with slash and path2 begins with slash, return combined with just one slash
         return path1 + path2.substr(1, path2.length() - 1);
     }
-    
+
     return path1 + "\\" + path2; //neither path has a slash at the join location, return combined with a slash
     //std::string combined = (path1[path1.length() - 1] == '\\' || path1[path1.length() - 1] == '/') ? path1 : path1 + "\\";
     //return combined + ((path2[0] == '\\' || path2[0] == '/') ? path2.substr(1, path2.length() - 1) : path2);
@@ -187,20 +187,21 @@ std::wstring TPathTool::Path_Combine(const std::wstring& path1, const std::wstri
              ((path1[path1.length() - 1] != L'\\' && path1[path1.length() - 1] != L'/') && (path2[0] == L'\\' ||
               path2[0] == L'/')))
     {
-        return path1 + path2; //one of the paths has a slash in the proper spot, so combine and return
+        //one of the paths has a slash in the proper spot, so combine and return
+        return path1 + path2;
     }
     else if (path1[path1.length() - 1] == L'\\' || path1[path1.length() - 1] == L'/')
     {
         // path1 ends with slash and path2 begins with slash, return combined with just one slash
         return path1 + path2.substr(1, path2.length() - 1);
     }
-    
+
     return path1 + L"\\" + path2; //neither path has a slash at the join location, return combined with a slash
 }
 //---------------------------------------------------------------------------
 // -Static
 // - Expands the environment variable in the path to the actual path.
-bool TPathTool::Path_ExpandEnvironmentVars(const std::string& path, std::string &dest)
+bool TPathTool::Path_ExpandEnvironmentVars(const std::string& path, std::string& dest)
 {
 #ifdef USE_ELOG
     const wchar_t codeSectionStr[] = L"TPathTool::Path_ExpandEnvironmentVars(A)";
@@ -246,7 +247,7 @@ bool TPathTool::Path_ExpandEnvironmentVars(const std::string& path, std::string 
 //---------------------------------------------------------------------------
 // -Static
 // - Expands the environment variable in the path to the actual path.
-bool TPathTool::Path_ExpandEnvironmentVars(const std::wstring& path, std::wstring &dest)
+bool TPathTool::Path_ExpandEnvironmentVars(const std::wstring& path, std::wstring& dest)
 {
 #ifdef USE_ELOG
     const wchar_t codeSectionStr[] = L"TPathTool::Path_ExpandEnvironmentVars(W)";
@@ -292,7 +293,7 @@ bool TPathTool::Path_ExpandEnvironmentVars(const std::wstring& path, std::wstrin
 //---------------------------------------------------------------------------
 // -Static
 // -Extracts file name portion from a slash delimited path. If no slashes
-//    are found, returns entire contents of path.
+//  are found, returns entire contents of path.
 std::string TPathTool::Path_ExtractFileName(const std::string& path)
 {
     size_t splitIdx = path.find_last_of("/\\");
@@ -303,7 +304,7 @@ std::string TPathTool::Path_ExtractFileName(const std::string& path)
 //---------------------------------------------------------------------------
 // -Static
 // -Extracts file name portion from a slash delimited path. If no slashes
-//    are found, returns entire contents of path.
+//  are found, returns entire contents of path.
 std::wstring TPathTool::Path_ExtractFileName(const std::wstring& path)
 {
     size_t splitIdx = path.find_last_of(L"/\\");
@@ -314,7 +315,7 @@ std::wstring TPathTool::Path_ExtractFileName(const std::wstring& path)
 //---------------------------------------------------------------------------
 // -Static
 // -Extracts file name portion from a slash delimited path. If no slashes
-//    are found, returns entire contents of path.
+//  are found, returns entire contents of path.
 std::string TPathTool::Path_ExtractFileName(const std::string& path, bool removeExtension)
 {
     if (!removeExtension)
@@ -324,7 +325,7 @@ std::string TPathTool::Path_ExtractFileName(const std::string& path, bool remove
 //---------------------------------------------------------------------------
 // -Static
 // -Extracts file name portion from a slash delimited path. If no slashes
-//    are found, returns entire contents of path.
+//  are found, returns entire contents of path.
 std::wstring TPathTool::Path_ExtractFileName(const std::wstring& path, bool removeExtension)
 {
     if (!removeExtension)
@@ -334,7 +335,7 @@ std::wstring TPathTool::Path_ExtractFileName(const std::wstring& path, bool remo
 //---------------------------------------------------------------------------
 // -Static
 // -Removes the last extension (e.g. ".txt") from the path. If no extension
-//    found, returns entire contents of path.
+//  found, returns entire contents of path.
 std::string TPathTool::Path_RemoveExtension(const std::string& path)
 {
     size_t splitIdx = path.find_last_of(".");
@@ -345,7 +346,7 @@ std::string TPathTool::Path_RemoveExtension(const std::string& path)
 //---------------------------------------------------------------------------
 // -Static
 // -Removes the last extension (e.g. ".txt") from the path. If no extension
-//    found, returns entire contents of path.
+//  found, returns entire contents of path.
 std::wstring TPathTool::Path_RemoveExtension(const std::wstring& path)
 {
     size_t splitIdx = path.find_last_of(L".");
@@ -356,7 +357,7 @@ std::wstring TPathTool::Path_RemoveExtension(const std::wstring& path)
 //---------------------------------------------------------------------------
 // -Static
 // -Gets the last extension (e.g. ".txt") from the path. If no extension
-//    found, returns empty string.
+//  found, returns empty string.
 std::string TPathTool::Path_GetExtension(const std::string& path)
 {
     size_t splitIdx = path.find_last_of(".");
@@ -367,7 +368,7 @@ std::string TPathTool::Path_GetExtension(const std::string& path)
 //---------------------------------------------------------------------------
 // -Static
 // -Gets the last extension (e.g. ".txt") from the path. If no extension
-//    found, returns empty string.
+//  found, returns empty string.
 std::wstring TPathTool::Path_GetExtension(const std::wstring& path)
 {
     size_t splitIdx = path.find_last_of(L".");

@@ -17,11 +17,11 @@ namespace Subroutines
 {
 
 /////////////////////////////////////////////////////////////////////////////
-// TAppTool class
+// TAppTool
 /////////////////////////////////////////////////////////////////////////////
 class TAppTool
 {
-typedef TAppTool ThisType;
+    typedef TAppTool ThisType;
 
 public:
     ////// only const static variables allowed in this public - see second public for regular stuff //////

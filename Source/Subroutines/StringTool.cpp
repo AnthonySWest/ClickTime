@@ -30,7 +30,7 @@
     #if (_MSC_VER >= 1910) // VStudio 2017 or higher
 //This will use the VS safe string functions to avoid the "may be unsafe" warnings.
 //Note that _CRT_SECURE_NO_WARNINGS can also be defined in order to ignore the warnings.
-        #define USE_SAFESTR_FUNCS
+    #define USE_SAFESTR_FUNCS //tells logger to use the Microsoft secure char/wchar manipulation functions
 #endif // #if (_MSC_VER >= 1910)
 #endif // #ifdef _MSC_VER
 
@@ -45,7 +45,7 @@ const char TStrTool::HEX_UPPER[NUM_HEX_CHARS] = { '0', '1', '2', '3', '4', '5', 
 const char TStrTool::HEX_LOWER[NUM_HEX_CHARS] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
 
 /////////////////////////////////////////////////////////////////////////////
-// TStrTool class
+// TStrTool
 /////////////////////////////////////////////////////////////////////////////
 
 //---------------------------------------------------------------------------
@@ -85,16 +85,16 @@ bool TStrTool::Reset() //virtual
 }
 //---------------------------------------------------------------------------
 // - Static
-std::string TStrTool::UnicodeStrToUtf8(const std::wstring& str)
+std::string TStrTool::UnicodeStrToUtf8(std::wstring const& str)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+    std::wstring_convert<std::codecvt_utf8<wchar_t> > myconv;
     return myconv.to_bytes(str);
 }
 //---------------------------------------------------------------------------
 // -Static
 std::wstring TStrTool::Utf8ToUnicodeStr(const std::string& str)
 {
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> myconv;
+    std::wstring_convert<std::codecvt_utf8<wchar_t> > myconv;
     return myconv.from_bytes(str);
 }
 //---------------------------------------------------------------------------
@@ -156,10 +156,10 @@ std::wstring TStrTool::GetWindowsLastErrorCodeAsStringW(const DWORD winLastErr)
 //---------------------------------------------------------------------------
 // -Static
 // -Copies what will fit from src into dest, up to first null terminator, not exceeding
-//    destSize_words, and ensures that dest is null terminated.
+//  destSize_words, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destSize_words is zero.
 // -Ignores locale.
-bool TStrTool::StrCpyW(wchar_t* dest, size_t destSize_words, const wchar_t* src)
+bool TStrTool::StrCpyW(wchar_t* dest, size_t destSize_words, wchar_t const* src)
 {
     if (nullptr == dest || destSize_words == 0)
         return false;
@@ -180,10 +180,10 @@ bool TStrTool::StrCpyW(wchar_t* dest, size_t destSize_words, const wchar_t* src)
 //---------------------------------------------------------------------------
 // -Static
 // -Copies what will fit from src into dest, up to first null terminator, not exceeding
-//    destSize_bytes, and ensures that dest is null terminated.
+//  destSize_bytes, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destSize_bytes is zero.
 // -Ignores locale.
-bool TStrTool::StrCpyA(char* dest, size_t destSize_bytes, const char* src)
+bool TStrTool::StrCpyA(char* dest, size_t destSize_bytes, char const* src)
 {
     if (nullptr == dest || destSize_bytes == 0)
         return false;
@@ -204,12 +204,12 @@ bool TStrTool::StrCpyA(char* dest, size_t destSize_bytes, const char* src)
 //---------------------------------------------------------------------------
 // -Static
 // -Performs a copy by calling either StrCpyW() or StrCpyA(), depending on
-//    the project TCHAR type (unicode or not).
+//  the project TCHAR type (unicode or not).
 // -Copies what will fit from src into dest, up to first null terminator, not exceeding
-//    destArrayLen, and ensures that dest is null terminated.
+//  destArrayLen, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destArrayLen is zero.
 // -Ignores locale.
-bool TStrTool::StrCpyT(TCHAR* dest, size_t destArrayLen, const TCHAR* src)
+bool TStrTool::StrCpyT(TCHAR* dest, size_t destArrayLen, TCHAR const* src)
 {
 #ifdef _UNICODE
     return StrCpyW(dest, destArrayLen, src);
@@ -220,9 +220,9 @@ bool TStrTool::StrCpyT(TCHAR* dest, size_t destArrayLen, const TCHAR* src)
 //---------------------------------------------------------------------------
 // -Static
 // -Copies what will fit from src into dest, up to maxCount, or first null terminator, whichever
-//    comes first, not exceeding destSize_words, and ensures that dest is null terminated.
+//  comes first, not exceeding destSize_words, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destSize_words is zero.
-bool TStrTool::StrNCpy_safeW(wchar_t* dest, size_t destSize_words, const wchar_t* src, size_t maxCount)
+bool TStrTool::StrNCpy_safeW(wchar_t* dest, size_t destSize_words, wchar_t const* src, size_t maxCount)
 {
     if (nullptr == dest || destSize_words == 0)
         return false;
@@ -249,9 +249,9 @@ bool TStrTool::StrNCpy_safeW(wchar_t* dest, size_t destSize_words, const wchar_t
 //---------------------------------------------------------------------------
 // -Static
 // -Copies what will fit from src into dest, up to maxCount, or first null terminator, whichever
-//    comes first, not exceeding destSize_bytes, and ensures that dest is null terminated.
+//  comes first, not exceeding destSize_bytes, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destSize_bytes is zero.
-bool TStrTool::StrNCpy_safeA(char* dest, size_t destSize_bytes, const char* src, size_t maxCount)
+bool TStrTool::StrNCpy_safeA(char* dest, size_t destSize_bytes, char const* src, size_t maxCount)
 {
     if (nullptr == dest || destSize_bytes == 0)
         return false;
@@ -278,11 +278,11 @@ bool TStrTool::StrNCpy_safeA(char* dest, size_t destSize_bytes, const char* src,
 //---------------------------------------------------------------------------
 // -Static
 // -Performs a copy by calling either StrNCpy_safeW() or StrNCpy_safeA(), depending on
-//    the project TCHAR type (unicode or not).
+//  the project TCHAR type (unicode or not).
 // -Copies what will fit from src into dest, up to maxCount, or first null terminator, whichever
-//    comes first, not exceeding destArrayLen, and ensures that dest is null terminated.
+//  comes first, not exceeding destArrayLen, and ensures that dest is null terminated.
 // -Returns false for failure. Will fail if dest is null or destArrayLen is zero.
-bool TStrTool::StrNCpy_safeT(TCHAR* dest, size_t destArrayLen, const TCHAR* src, size_t maxCount)
+bool TStrTool::StrNCpy_safeT(TCHAR* dest, size_t destArrayLen, TCHAR const* src, size_t maxCount)
 {
 #ifdef _UNICODE
     return StrNCpy_safeW(dest, destArrayLen, src, maxCount);
@@ -298,10 +298,10 @@ void TStrTool::TrimLeft(std::string& s)
 {
     s.erase(s.begin(),
         std::find_if(s.begin(), s.end(), [](unsigned char ch)
-            {
-                return !std::isspace(ch);
-            })
-        );
+        {
+            return !std::isspace(ch);
+        })
+    );
 }
 //---------------------------------------------------------------------------
 // -Static
@@ -312,10 +312,10 @@ void TStrTool::TrimLeft(std::string& s, const unsigned char trimChar, bool trim_
 {
     s.erase(s.begin(),
         std::find_if(s.begin(), s.end(), [trimChar, trim_isspace](unsigned char ch)
-            {
-                return trim_isspace ? (!std::isspace(ch) && trimChar != ch) : trimChar != ch;
-            })
-        );
+        {
+            return trim_isspace ? (!std::isspace(ch) && trimChar != ch) : trimChar != ch;
+        })
+    );
 }
 //---------------------------------------------------------------------------
 // -Static
@@ -325,9 +325,9 @@ void TStrTool::TrimLeft(std::wstring& s)
 {
     s.erase(s.begin(),
         std::find_if(s.begin(), s.end(), [](wchar_t ch)
-            {
-                return !std::iswspace(ch);
-            })
+        {
+            return !std::iswspace(ch);
+        })
     );
 }
 //---------------------------------------------------------------------------
@@ -339,9 +339,9 @@ void TStrTool::TrimLeft(std::wstring& s, const wchar_t trimChar, bool trim_iswsp
 {
     s.erase(s.begin(),
         std::find_if(s.begin(), s.end(), [trimChar, trim_iswspace](wchar_t ch)
-            {
-                return trim_iswspace ? (!std::iswspace(ch) && trimChar != ch) : trimChar != ch;
-            })
+        {
+            return trim_iswspace ? (!std::iswspace(ch) && trimChar != ch) : trimChar != ch;
+        })
     );
 }
 //---------------------------------------------------------------------------
@@ -364,7 +364,7 @@ void TStrTool::TrimRight(std::string& s, const unsigned char trimChar, bool trim
 {
     //Note: Can use [trimChar, trim_isspace] in the lambda, or just [=] to get access to
     //trimChar and trim_isspace.
-    s.erase(std::find_if(s.rbegin(), s.rend(), [=](unsigned char ch)
+    s.erase(std::find_if(s.rbegin(), s.rend(), [ = ](unsigned char ch)
         {
             return trim_isspace ? (!std::isspace(ch) && trimChar != ch) : trimChar != ch;
         }).base(), s.end());
@@ -389,7 +389,7 @@ void TStrTool::TrimRight(std::wstring& s, const wchar_t trimChar, bool trim_isws
 {
     //Note: Can use [trimChar, trim_iswspace] in the lambda, or just [=] to get access to
     //trimChar and trim_iswspace.
-    s.erase(std::find_if(s.rbegin(), s.rend(), [=](wchar_t ch)
+    s.erase(std::find_if(s.rbegin(), s.rend(), [ = ](wchar_t ch)
         {
             return trim_iswspace ? (!std::iswspace(ch) && trimChar != ch) : trimChar != ch;
         }).base(), s.end());
@@ -540,7 +540,7 @@ std::wstring TStrTool::Trim_Copy(std::wstring s, const wchar_t trimChar, bool tr
 }
 //---------------------------------------------------------------------------
 // -Static
-bool TStrTool::IsEmptyOrWhiteSpace(const std::string &s)
+bool TStrTool::IsEmptyOrWhiteSpace(std::string const& s)
 {
     if (s.length() == 0)
         return true;
@@ -552,7 +552,7 @@ bool TStrTool::IsEmptyOrWhiteSpace(const std::string &s)
 }
 //---------------------------------------------------------------------------
 // -Static
-bool TStrTool::IsEmptyOrWhiteSpace(const std::wstring &s)
+bool TStrTool::IsEmptyOrWhiteSpace(std::wstring const& s)
 {
     if (s.length() == 0)
         return true;
@@ -565,7 +565,7 @@ bool TStrTool::IsEmptyOrWhiteSpace(const std::wstring &s)
 //---------------------------------------------------------------------------
 // -'path' will be wrapped in double quotes, unless already starts with a double quote.
 // -Caller is responsible for ensuring that 'args' is a proper command argument list, or blank.
-std::string TStrTool::CombinePathAndArgs(const std::string& path, const std::string& args)
+std::string TStrTool::CombinePathAndArgs(std::string const& path, std::string const& args)
 {
     std::string pathAndArgs;
 
@@ -582,7 +582,7 @@ std::string TStrTool::CombinePathAndArgs(const std::string& path, const std::str
 //---------------------------------------------------------------------------
 // -'path' will be wrapped in double quotes, unless already starts with a double quote.
 // -Caller is responsible for ensuring that 'args' is a proper command argument list, or blank.
-std::wstring TStrTool::CombinePathAndArgs(const std::wstring& path, const std::wstring& args)
+std::wstring TStrTool::CombinePathAndArgs(std::wstring const& path, std::wstring const& args)
 {
     std::wstring pathAndArgs;
 
@@ -598,7 +598,7 @@ std::wstring TStrTool::CombinePathAndArgs(const std::wstring& path, const std::w
 }
 //---------------------------------------------------------------------------
 // -Static
-std::vector<std::string> TStrTool::Split(const std::string& str, const char sep)
+std::vector<std::string> TStrTool::Split(std::string const& str, const char sep)
 {
     std::string::size_type pos = 0, prevPos = 0;
     std::vector<std::string> list;
@@ -615,7 +615,7 @@ std::vector<std::string> TStrTool::Split(const std::string& str, const char sep)
 }
 //---------------------------------------------------------------------------
 // -Static
-std::vector<std::wstring> TStrTool::Split(const std::wstring& str, const wchar_t sep)
+std::vector<std::wstring> TStrTool::Split(std::wstring const& str, const wchar_t sep)
 {
     std::wstring::size_type pos = 0, prevPos = 0;
     std::vector<std::wstring> list;
@@ -633,7 +633,7 @@ std::vector<std::wstring> TStrTool::Split(const std::wstring& str, const wchar_t
 //---------------------------------------------------------------------------
 // -Static
 // -Inserts a delim character wherever there is a delim character found.
-std::string TStrTool::DelimStr_Escape(const std::string& strIn, const char delim)
+std::string TStrTool::DelimStr_Escape(std::string const& strIn, const char delim)
 {
     if (strIn.length() == 0)
         return "";
@@ -658,7 +658,7 @@ std::string TStrTool::DelimStr_Escape(const std::string& strIn, const char delim
 }
 //---------------------------------------------------------------------------
 // -Static
-std::wstring TStrTool::DelimStr_Escape(const std::wstring& strIn, wchar_t delim)
+std::wstring TStrTool::DelimStr_Escape(std::wstring const& strIn, wchar_t delim)
 {
     if (strIn.length() == 0)
         return L"";
@@ -683,7 +683,7 @@ std::wstring TStrTool::DelimStr_Escape(const std::wstring& strIn, wchar_t delim)
 }
 //---------------------------------------------------------------------------
 // -Static
-std::string TStrTool::DelimStr_UnEscape(const std::string& strIn, char delim)
+std::string TStrTool::DelimStr_UnEscape(std::string const& strIn, char delim)
 {
     if (strIn.length() == 0)
         return "";
@@ -693,7 +693,7 @@ std::string TStrTool::DelimStr_UnEscape(const std::string& strIn, char delim)
     const char* walkerIn = strIn.c_str();
     char* walkerOut = outBuff;
 
-    //copy in string to out string while inserting a delim wherever a delim is found
+    //copy in string to out string while skipping escaped delims wherever a delim is found
     while (*walkerIn)
     {
         if (delim == *walkerIn && delim == *(walkerIn + 1))
@@ -708,7 +708,7 @@ std::string TStrTool::DelimStr_UnEscape(const std::string& strIn, char delim)
 }
 //---------------------------------------------------------------------------
 // -Static
-std::wstring TStrTool::DelimStr_UnEscape(const std::wstring& strIn, wchar_t delim)
+std::wstring TStrTool::DelimStr_UnEscape(std::wstring const& strIn, wchar_t delim)
 {
     if (strIn.length() == 0)
         return L"";
@@ -843,7 +843,7 @@ std::vector<std::wstring> TStrTool::CombineLists_Unique(const std::vector<std::w
 // -Static
 // -Splits the host and path portion from a URL. If URL has not path (just a host) then
 //  pathUtf8 will be set to "/".
-bool TStrTool::URL_Split(const std::string& url, std::string* hostUtf8, std::string* pathUtf8)
+bool TStrTool::URL_Split(std::string const& url, std::string* hostUtf8, std::string* pathUtf8)
 {
     const std::string httpPrefix = "http://";
     const std::string httpsPrefix = "https://";
@@ -921,7 +921,7 @@ bool TStrTool::HexSingleToByte(const char hexSingle, BYTE* out)
 //---------------------------------------------------------------------------
 // -Static
 // -Converts utf8 string to url encoded escaped "%" values
-std::string TStrTool::URL_EncodeUtf8(const std::string& valueUtf8, bool useUpperCaseHex)
+std::string TStrTool::URL_EncodeUtf8(std::string const& valueUtf8, bool useUpperCaseHex)
 {
     if (valueUtf8.length() == 0)
         return "";
@@ -960,7 +960,7 @@ std::string TStrTool::URL_EncodeUtf8(const std::string& valueUtf8, bool useUpper
 //---------------------------------------------------------------------------
 // -Static
 // -Decodes url encoded/escaped string back to a utf8 string.
-std::string TStrTool::URL_DecodeUtf8(const std::string& encodedStr, bool* invalidHexEncountered)
+std::string TStrTool::URL_DecodeUtf8(std::string const& encodedStr, bool* invalidHexEncountered)
 {
     if (encodedStr.length() == 0)
         return "";
