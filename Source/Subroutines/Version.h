@@ -18,20 +18,21 @@ namespace Subroutines
 {
 
 /////////////////////////////////////////////////////////////////////////////
-// TVersion class
+// TVersion
 //
 // For version comparison checking.
 /////////////////////////////////////////////////////////////////////////////
 class TVersion
 {
-typedef TVersion ThisType;
+private:
+    typedef TVersion ThisType;
 
 public:
     TVersion();
-    TVersion(const TVersion& version);
+    TVersion(TVersion const& version);
     TVersion(unsigned long long valueU64);
-    TVersion(const std::string& verStr);
-    TVersion(const std::wstring& verStr);
+    TVersion(std::string const& verStr);
+    TVersion(std::wstring const& verStr);
     ~TVersion();
 
     //share memory between version elements for easy assignment working with windows version stuff
@@ -49,25 +50,25 @@ public:
 
     void Reset();
     void SetVersion(WORD major, WORD minor, WORD build, WORD revision);
-    bool ExtractVersionNumbersFromVersionStr(const std::string& verStr);
-    bool ExtractVersionNumbersFromVersionStr(const std::wstring& verStr);
-    static bool ExtractVersionNumbersFromVersionStr(const std::string& verStr, int *major,
-        int *minor, int *build, int *revision);
-    static bool ExtractVersionNumbersFromVersionStr(const std::wstring& verStr, int *major,
-        int *minor, int *build, int *revision);
+    bool ExtractVersionNumbersFromVersionStr(std::string const& verStr);
+    bool ExtractVersionNumbersFromVersionStr(std::wstring const& verStr);
+    static bool ExtractVersionNumbersFromVersionStr(std::string const& verStr, int* major,
+        int* minor, int* build, int* revision);
+    static bool ExtractVersionNumbersFromVersionStr(std::wstring const& verStr, int* major,
+        int* minor, int* build, int* revision);
     std::string ToStrVer() const;
     std::wstring ToStrVerW() const;
 
     // operator related functions
-    bool CopyFrom(const ThisType& otherClass);
-    bool SameAs(const ThisType& otherClass) const;
-    ThisType& operator=(const ThisType& right);
-    bool operator==(const ThisType& right) const;
-    bool operator!=(const ThisType& right) const;
-    bool operator<(const ThisType& right) const;
-    bool operator<=(const ThisType& right) const;
-    bool operator>(const ThisType& right) const;
-    bool operator>=(const ThisType& right) const;
+    bool CopyFrom(ThisType const& otherClass);
+    bool SameAs(ThisType const& otherClass) const;
+    ThisType& operator=(ThisType const& right);
+    bool operator==(ThisType const& right) const;
+    bool operator!=(ThisType const& right) const;
+    bool operator<(ThisType const& right) const;
+    bool operator<=(ThisType const& right) const;
+    bool operator>(ThisType const& right) const;
+    bool operator>=(ThisType const& right) const;
 };
 
 } // namespace Subroutines

@@ -12,10 +12,8 @@
 namespace Subroutines
 {
 
-//---------------------- class statics --------------------------------------
-
 /////////////////////////////////////////////////////////////////////////////
-// TVersion class
+// TVersion
 /////////////////////////////////////////////////////////////////////////////
 
 //---------------------------------------------------------------------------
@@ -24,7 +22,7 @@ TVersion::TVersion()
     Reset();
 }
 //---------------------------------------------------------------------------
-TVersion::TVersion(const TVersion& version)
+TVersion::TVersion(TVersion const& version)
 {
     Reset();
     ValueU64 = version.ValueU64;
@@ -36,13 +34,13 @@ TVersion::TVersion(unsigned long long valueU64)
     ValueU64 = valueU64;
 }
 //---------------------------------------------------------------------------
-TVersion::TVersion(const std::string& verStr)
+TVersion::TVersion(std::string const& verStr)
 {
     Reset();
     ExtractVersionNumbersFromVersionStr(verStr);
 }
 //---------------------------------------------------------------------------
-TVersion::TVersion(const std::wstring& verStr)
+TVersion::TVersion(std::wstring const& verStr)
 {
     Reset();
     ExtractVersionNumbersFromVersionStr(verStr);
@@ -65,7 +63,7 @@ void TVersion::SetVersion(WORD major, WORD minor, WORD build, WORD revision)
     Revision = revision;
 }
 //---------------------------------------------------------------------------
-bool TVersion::ExtractVersionNumbersFromVersionStr(const std::string& verStr)
+bool TVersion::ExtractVersionNumbersFromVersionStr(std::string const& verStr)
 {
     int major, minor, build, revision;
 
@@ -83,7 +81,7 @@ bool TVersion::ExtractVersionNumbersFromVersionStr(const std::string& verStr)
     return false;
 }
 //---------------------------------------------------------------------------
-bool TVersion::ExtractVersionNumbersFromVersionStr(const std::wstring& verStr)
+bool TVersion::ExtractVersionNumbersFromVersionStr(std::wstring const& verStr)
 {
     int major, minor, build, revision;
 
@@ -102,15 +100,15 @@ bool TVersion::ExtractVersionNumbersFromVersionStr(const std::wstring& verStr)
 }
 //---------------------------------------------------------------------------
 //  -Static
-bool TVersion::ExtractVersionNumbersFromVersionStr(const std::string& verStr, int *major,
-            int *minor, int *build, int *revision)
+bool TVersion::ExtractVersionNumbersFromVersionStr(std::string const& verStr, int* major,
+    int* minor, int* build, int* revision)
 {
     *major = *minor = *build = *revision = 0;
 
     if (verStr.length() == 0)
         return false;
 
-    const char *walker = verStr.c_str();
+    const char* walker = verStr.c_str();
 
     //get major version number
     *major = atoi(walker);
@@ -140,15 +138,15 @@ bool TVersion::ExtractVersionNumbersFromVersionStr(const std::string& verStr, in
 }
 //---------------------------------------------------------------------------
 //  -Static
-bool TVersion::ExtractVersionNumbersFromVersionStr(const std::wstring& verStr, int *major,
-            int *minor, int *build, int *revision)
+bool TVersion::ExtractVersionNumbersFromVersionStr(std::wstring const& verStr, int* major,
+    int* minor, int* build, int* revision)
 {
     *major = *minor = *build = *revision = 0;
 
     if (verStr.length() == 0)
         return false;
 
-    const wchar_t *walker = verStr.c_str();
+    const wchar_t* walker = verStr.c_str();
 
     //get major version number
     *major = _wtoi(walker);
@@ -191,27 +189,19 @@ std::wstring TVersion::ToStrVerW() const
 
 //---------------------------------------------------------------------------
 // -Returns true for success
-bool TVersion::CopyFrom(const ThisType& otherClass)
+bool TVersion::CopyFrom(ThisType const& otherClass)
 {
     if (this == &otherClass)
         return true; //done due to self-assignment
 
     Reset();
 
-    //try
-    //{
-        ValueU64 = otherClass.ValueU64;
-    //}
-    //catch (...)
-    //{
-    //    ELog.fwprintf(ELogMsgLevel::LML_Light, L"%s: Error: Exception.\n", __FUNCTIONW__);
-    //    return false;
-    //}
+    ValueU64 = otherClass.ValueU64;
 
     return true;
 }
 //---------------------------------------------------------------------------
-bool TVersion::SameAs(const ThisType& otherClass) const
+bool TVersion::SameAs(ThisType const& otherClass) const
 {
     if (this == &otherClass)
         return true; //self-compare
@@ -224,7 +214,7 @@ bool TVersion::SameAs(const ThisType& otherClass) const
     return true;
 }
 //---------------------------------------------------------------------------
-TVersion& TVersion::operator=(const ThisType& right)
+TVersion& TVersion::operator=(ThisType const& right)
 {
     //avoid a self assignment
     if (this != &right)
@@ -232,38 +222,38 @@ TVersion& TVersion::operator=(const ThisType& right)
     return *this;
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator==(const ThisType& right) const
+bool TVersion::operator==(ThisType const& right) const
 {
     if (this == &right)
         return true; //self-compare
     return this->SameAs(right);
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator!=(const ThisType& right) const
+bool TVersion::operator!=(ThisType const& right) const
 {
     return !(*this == right);
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator<(const ThisType& right) const
+bool TVersion::operator<(ThisType const& right) const
 {
     if (this == &right)
         return false; //self-compare
     return ValueU64 < right.ValueU64;
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator<=(const ThisType& right) const
+bool TVersion::operator<=(ThisType const& right) const
 {
     if (this == &right)
         return true; //self-compare
     return ValueU64 <= right.ValueU64;
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator>(const ThisType& right) const
+bool TVersion::operator>(ThisType const& right) const
 {
     return !(*this <= right);
 }
 //---------------------------------------------------------------------------
-bool TVersion::operator>=(const ThisType& right) const
+bool TVersion::operator>=(ThisType const& right) const
 {
     return !(*this < right);
 }
