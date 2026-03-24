@@ -1,25 +1,44 @@
-//---------------------------------------------------------------------------
-// MainForm.h
-// Author: Anthony West - ASW Software
-//---------------------------------------------------------------------------
+/* **************************************************************************
+MainForm.h
+Author: Anthony S. West - ASW Software
+
+Contains the UI for controlling the click configuration.
+
+Copyright 2023 Anthony S. West
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+************************************************************************** */
 
 #ifndef MainFormH
 #define MainFormH
 //---------------------------------------------------------------------------
 #include <System.Classes.hpp>
-#include <Vcl.Controls.hpp>
-#include <Vcl.StdCtrls.hpp>
-#include <Vcl.Forms.hpp>
-#include "Version.h"
 #include <Vcl.Buttons.hpp>
-#include <Vcl.ExtCtrls.hpp>
-#include <Vcl.Menus.hpp>
 #include <Vcl.ComCtrls.hpp>
+#include <Vcl.Controls.hpp>
+#include <Vcl.ExtCtrls.hpp>
+#include <Vcl.Forms.hpp>
+#include <Vcl.Menus.hpp>
+#include <Vcl.StdCtrls.hpp>
+//---------------------------------------------------------------------------
+#include "Version.h"
 //---------------------------------------------------------------------------
 
-// //////////////////////////////////////////////////////////////////////////
-// TFrmMain class
-// //////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// TFrmMain
+/////////////////////////////////////////////////////////////////////////////
 class TFrmMain : public TForm
 {
 __published: // IDE-managed Components
@@ -40,43 +59,29 @@ __published: // IDE-managed Components
     TCheckBox *CB_HK_Ctrl;
     TCheckBox *CB_HK_Alt;
     TComboBox *CBox_HK_FKey;
-    void __fastcall FormDestroy(TObject *Sender);
-    void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
-    void __fastcall BtnStartClick(TObject *Sender);
-    void __fastcall TimerClickTimer(TObject *Sender);
-    void __fastcall BtnStopClick(TObject *Sender);
-    void __fastcall CBoxTimeFrameChange(TObject *Sender);
-    void __fastcall FormCreate(TObject *Sender);
+    TLabel *LblHoldInterval;
+    TComboBox *CBoxHoldInterval;
+    TEdit *EditHoldInterval;
     void __fastcall BtnAboutClick(TObject *Sender);
     void __fastcall BtnExitClick(TObject *Sender);
+    void __fastcall BtnStartClick(TObject *Sender);
+    void __fastcall BtnStopClick(TObject *Sender);
+    void __fastcall CBoxTimeFrameChange(TObject *Sender);
+    void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
+    void __fastcall FormCreate(TObject *Sender);
+    void __fastcall FormDestroy(TObject *Sender);
+    void __fastcall TimerClickTimer(TObject *Sender);
+
 private: // User declarations
-
-    // /////////// Static vars go here ////////////////////////////
-
-    // /////////// Non-static vars go here ////////////////////////////
-
     HHOOK WinKeyEventHook;
 
-    bool ShiftKeyDown;
-    bool CtrlKeyDown;
     bool AltKeyDown;
+    bool CtrlKeyDown;
+    bool ShiftKeyDown;
 
     long long ClickCount;
 
-    // /////////// Functions go here ////////////////////////////
-
-    virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
-
-    DWORD GetClickIntervalMS();
-    void InitializeKeyEventHook();
-    void ShutdownKeyEventHook();
-    void UpdateStatusPanel_Clicks();
-
-public: // User declarations
-    __fastcall TFrmMain(TComponent* owner);
-
-    // /////////// Static vars go here ////////////////////////////
-
+public:
     static AnsiString AppFriendlyName;
     static AnsiString CompanyName;
 
@@ -91,21 +96,28 @@ public: // User declarations
     static unsigned short AppStart_Day, AppStart_Month, AppStart_Year;
     static System::Word AppStart_Hour, AppStart_Min, AppStart_Sec, AppStart_MSec;
 
-    // /////////// Non-static vars go here ////////////////////////////
+public:
+    static DWORD GetShiftStateMask(bool shift, bool ctrl, bool alt);
+    static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
 
+private:
+    virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
 
-    // /////////// Functions go here ////////////////////////////
+    DWORD GetClickIntervalMS();
+    void InitializeKeyEventHook();
+    void ShutdownKeyEventHook();
+    void UpdateStatusPanel_Clicks();
+
+public: // User declarations
+    __fastcall TFrmMain(TComponent* owner);
+
     void SetFormToProcessStarted();
     void SetFormToProcessStopped();
-
-    static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static DWORD GetShiftStateMask(bool shift, bool ctrl, bool alt);
-
-    // /////////// Properties go here ////////////////////////////
-
 };
-//---------------------------------------------------------------------------
+
 extern PACKAGE TFrmMain *FrmMain;
+
+//---------------------------------------------------------------------------
 
 int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType, TMsgDlgButtons buttons);
 
