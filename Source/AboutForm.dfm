@@ -26,7 +26,7 @@ object FrmAbout: TFrmAbout
     Alignment = taCenter
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Caption = 'ClickTime by ASW Software, Copyright (c) 2023'
+    Caption = 'ClickTime by ASW Software, Copyright (c) 2023-2026'
   end
   object LblVersion: TLabel
     Left = 16
@@ -56,8 +56,6 @@ object FrmAbout: TFrmAbout
     Caption = '&Close'
     ModalResult = 8
     TabOrder = 0
-    ExplicitLeft = 436
-    ExplicitTop = 283
   end
   object MemoAbout: TMemo
     Left = 16
@@ -1542,6 +1540,5 @@ object FrmAbout: TFrmAbout
     ReadOnly = True
     ScrollBars = ssVertical
     TabOrder = 1
-    ExplicitWidth = 552
   end
 end

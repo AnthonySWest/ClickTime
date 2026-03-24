@@ -1,7 +1,25 @@
-//---------------------------------------------------------------------------
-// MainForm.cpp
-// Author: Anthony West - ASW Software
-//---------------------------------------------------------------------------
+/* **************************************************************************
+MainForm.cpp
+Author: Anthony S. West - ASW Software
+
+See header for info.
+
+Copyright 2023 Anthony S. West
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+************************************************************************** */
 
 #include <vcl.h>
 #pragma hdrstop
@@ -12,13 +30,13 @@
 #pragma resource "*.dfm"
 //---------------------------------------------------------------------------
 #include "AboutForm.h"
-#include "StringTool.h"
 #include "MouseTool.h"
+#include "StringTool.h"
 //---------------------------------------------------------------------------
-
 using namespace Subroutines;
-
+using namespace System::Sysutils;
 //---------------------------------------------------------------------------
+
 // MsgDlg
 //
 // A messagebox wrapper
@@ -49,9 +67,9 @@ int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlg
 
 //---------------------------------------------------------------------------
 
-// //////////////////////////////////////////////////////////////////////////
-// TFrmMain class
-// //////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+// TFrmMain
+/////////////////////////////////////////////////////////////////////////////
 
 TFrmMain *FrmMain;
 
@@ -96,14 +114,95 @@ __fastcall TFrmMain::TFrmMain(TComponent* owner)
     Caption = Caption + " - " + TFrmMain::CompanyName + " - " + AppVersion.ToStrVer().c_str();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::FormCreate(TObject* /*sender*/)
+void __fastcall TFrmMain::BtnAboutClick(TObject* /*sender*/)
 {
-    InitializeKeyEventHook();
+    FrmAbout->ShowModal();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::FormDestroy(TObject* /*sender*/)
+void __fastcall TFrmMain::BtnExitClick(TObject* sender)
 {
-    ShutdownKeyEventHook();
+    if (FrmMain->BtnStop->Enabled)
+        FrmMain->BtnStopClick(sender);
+
+    Application->Terminate();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
+{
+    bool showInvalidValueMsg = false;
+    DWORD holdIntervalMS = 0;
+
+    BtnStart->Enabled = false;
+    ClickCount = 0;
+    UpdateStatusPanel_Clicks();
+
+    try
+    {
+        holdIntervalMS = GetHoldClickIntervalMS();
+        if (holdIntervalMS == 0)
+            showInvalidValueMsg = true;
+    }
+    catch (...)
+    {
+        showInvalidValueMsg = true;
+    }
+
+    if (showInvalidValueMsg)
+    {
+        MsgDlg("Please enter a hold value greater than zero.",
+            TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
+        SetFormToProcessStopped();
+        return;
+    }
+
+    try
+    {
+        DWORD clickIntervalMS = GetClickIntervalMS();
+        if (clickIntervalMS == 0)
+        {
+            showInvalidValueMsg = true;
+        }
+        else
+        {
+            // Fix up the UI click interval value if less than the hold click value
+            if (clickIntervalMS < holdIntervalMS)
+            {
+                clickIntervalMS = holdIntervalMS;
+                EditTimeValue->Text = UIntToStr(static_cast<unsigned int>(clickIntervalMS));
+            }
+
+            TimerClick->Interval = clickIntervalMS;
+            TimerClick->Enabled = true;
+            SetFormToProcessStarted();
+        }
+    }
+    catch(...)
+    {
+        showInvalidValueMsg = true;
+    }
+
+    if (showInvalidValueMsg)
+    {
+        MsgDlg("Please enter a time value greater than zero.",
+            TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
+        SetFormToProcessStopped();
+    }
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
+{
+    TimerClick->Enabled = false;
+    SetFormToProcessStopped();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::CBoxHoldIntervalChange(TObject */*sender*/)
+{
+    UpdateEditFromIntervalCBoxSelection(CBoxHoldInterval, EditHoldInterval);
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
+{
+    UpdateEditFromIntervalCBoxSelection(CBoxTimeFrame, EditTimeValue);
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams &params)
@@ -117,24 +216,58 @@ void __fastcall TFrmMain::FormCloseQuery(TObject* /*sender*/, bool& /*canClose*/
     TimerClick->Enabled = false;
 }
 //---------------------------------------------------------------------------
-void TFrmMain::SetFormToProcessStarted()
+void __fastcall TFrmMain::FormCreate(TObject* /*sender*/)
 {
-    BtnStart->Enabled = false;
-    BtnStop->Enabled = true;
-    BtnAbout->Enabled = false;
-
-    CBoxTimeFrame->Enabled = false;
-    EditTimeValue->Enabled  = false;
+    InitializeKeyEventHook();
 }
 //---------------------------------------------------------------------------
-void TFrmMain::SetFormToProcessStopped()
+void __fastcall TFrmMain::FormDestroy(TObject* /*sender*/)
 {
-    BtnStart->Enabled = true;
-    BtnStop->Enabled = false;
-    BtnAbout->Enabled = true;
+    ShutdownKeyEventHook();
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetClickIntervalMS()
+{
+    return GetIntervalMS(CBoxTimeFrame, EditTimeValue);
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetHoldClickIntervalMS()
+{
+    return GetIntervalMS(CBoxHoldInterval, EditHoldInterval);
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetIntervalMS(TComboBox* cBox, TEdit* edit)
+{
+    double timeValDbl = edit->Text.ToDouble();
+    if (timeValDbl <= 0.0)
+        return 0;
 
-    CBoxTimeFrame->Enabled = true;
-    EditTimeValue->Enabled  = true;
+    DWORD intervalMS = 0;
+
+    if (cBox->ItemIndex == 0)
+        intervalMS = static_cast<DWORD>(timeValDbl);
+    else if (cBox->ItemIndex == 1)
+        intervalMS = static_cast<DWORD>(timeValDbl * 1000.0);
+    else if (cBox->ItemIndex == 2)
+        intervalMS = static_cast<DWORD>(timeValDbl * 60.0 * 1000.0);
+
+    return intervalMS;
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetShiftStateMask(bool shift, bool ctrl, bool alt)
+{
+    DWORD shiftState = 0;
+
+    if (shift)
+        shiftState = 0x01;
+
+    if (ctrl)
+        shiftState |= 0x02;
+
+    if (alt)
+        shiftState |= 0x04;
+
+    return shiftState;
 }
 //---------------------------------------------------------------------------
 // See: https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwindowshookexw
@@ -157,16 +290,7 @@ void TFrmMain::InitializeKeyEventHook()
     }
 }
 //---------------------------------------------------------------------------
-// See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
-// Unhooks the event
-void TFrmMain::ShutdownKeyEventHook()
-{
-    ::UnhookWindowsHookEx(WinKeyEventHook);
-    WinKeyEventHook = nullptr;
-    //::CoUninitialize();
-}
-//---------------------------------------------------------------------------
-//see: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms644985(v=vs.85)
+// see: https://learn.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms644985(v=vs.85)
 // - nCode: Must return right away if less than zero. Otherwise, process
 // - wParam can be: WM_KEYDOWN, WM_KEYUP, WM_SYSKEYDOWN, or WM_SYSKEYUP
 // - lParam is a pointer to a KBDLLHOOKSTRUCT structure.
@@ -174,9 +298,9 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
 {
     if (nCode < 0) //per documentation, return without further processing ASAP
         return ::CallNextHookEx(NULL, nCode, wParam, lParam);
-        
+
     //at this point, it should be HC_ACTION, but check anyway
-    if (HC_ACTION != nCode || nullptr == FrmMain) 
+    if (HC_ACTION != nCode || nullptr == FrmMain)
         return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 
     switch (wParam)
@@ -193,7 +317,7 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
                 FrmMain->CtrlKeyDown = true;
             else if (VK_LMENU == vkCode || VK_RMENU == vkCode)
                 FrmMain->AltKeyDown = true;
-                
+
             //can redirect - keeping here for knowledge sake
             //::keybd_event('A', 0, 0, 0);
             break;
@@ -208,15 +332,15 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
             if (VK_LSHIFT == vkCode || VK_RSHIFT == vkCode)
                 FrmMain->ShiftKeyDown = false;
             else if (VK_LCONTROL == vkCode || VK_RCONTROL == vkCode)
-                FrmMain->CtrlKeyDown = false;            
+                FrmMain->CtrlKeyDown = false;
             else if (VK_LMENU == vkCode || VK_RMENU == vkCode)
                 FrmMain->AltKeyDown = false;
             else if (vkCode == VK_F1 + FrmMain->CBox_HK_FKey->ItemIndex)
-            {     
+            {
                 DWORD shiftSettingsMask = GetShiftStateMask(FrmMain->CB_HK_Shift->Checked,
                     FrmMain->CB_HK_Ctrl->Checked, FrmMain->CB_HK_Alt->Checked);
                 DWORD shiftStateMask = GetShiftStateMask(FrmMain->ShiftKeyDown, FrmMain->CtrlKeyDown, FrmMain->AltKeyDown);
-                        
+
                 if (shiftStateMask == shiftSettingsMask)
                 {
                     if (FrmMain->BtnStart->Enabled)
@@ -232,138 +356,102 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
         }
     }
 
-    //Note: return 1 instead of calling the next hook to eat the key event.
+    //Note: Can also return 1 instead of calling the next hook to eat the key event.
     return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 //---------------------------------------------------------------------------
-DWORD TFrmMain::GetShiftStateMask(bool shift, bool ctrl, bool alt)
+void TFrmMain::SetFormToProcessStarted()
 {
-    DWORD shiftState = 0;
+    BtnStart->Enabled = false;
+    BtnStop->Enabled = true;
+    BtnAbout->Enabled = false;
 
-    if (shift)
-        shiftState = 0x01;
+    CBoxTimeFrame->Enabled = false;
+    EditTimeValue->Enabled  = false;
 
-    if (ctrl)
-        shiftState |= 0x02;
-
-    if (alt)
-        shiftState |= 0x04;
-
-    return shiftState;
+    CBoxHoldInterval->Enabled = false;
+    EditHoldInterval->Enabled  = false;
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
+void TFrmMain::SetFormToProcessStopped()
 {
-    bool showInvalidValueMsg = false;
+    BtnStart->Enabled = true;
+    BtnStop->Enabled = false;
+    BtnAbout->Enabled = true;
 
-    try
-    {
-        ClickCount = 0;
-        BtnStart->Enabled = false;
-        double timeValue = EditTimeValue->Text.ToDouble();
+    CBoxTimeFrame->Enabled = true;
+    EditTimeValue->Enabled  = true;
 
-        if (timeValue <= 0)
-        {
-            showInvalidValueMsg = true;
-        }
-        else
-        {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                TimerClick->Interval = timeValue;
-            else if (CBoxTimeFrame->ItemIndex == 1)
-                TimerClick->Interval = timeValue * 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                TimerClick->Interval = timeValue * 60 * 1000;
-
-            TimerClick->Enabled = true;
-            SetFormToProcessStarted();
-        }
-    }
-    catch(...)
-    {
-        showInvalidValueMsg = true;
-    }
-
-    if (showInvalidValueMsg)
-    {
-        MsgDlg("Please enter a time value greater than zero.", TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
-        SetFormToProcessStopped();
-    }
+    CBoxHoldInterval->Enabled = true;
+    EditHoldInterval->Enabled  = true;
+}
+//---------------------------------------------------------------------------
+// See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
+// Unhooks the event
+void TFrmMain::ShutdownKeyEventHook()
+{
+    ::UnhookWindowsHookEx(WinKeyEventHook);
+    WinKeyEventHook = nullptr;
+    //::CoUninitialize();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
-    int clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
+    DWORD clickUpDelayMS = GetHoldClickIntervalMS();
 
     if (TimerClick->Interval < clickUpDelayMS)
         TimerClick->Interval = clickUpDelayMS;
-    
+
     ClickCount++;
 
     if (RB_MouseLeft->Checked)
-        TMouseTool::MouseLeftClick();
-    else 
-        TMouseTool::MouseRightClick();
-        
-    StatusBar1->Panels->Items[0]->Text = UnicodeString(L"Clicks: ") + IntToStr(ClickCount);
-}
-//---------------------------------------------------------------------------
+        TMouseTool::MouseLeftClick(clickUpDelayMS);
+    else
+        TMouseTool::MouseRightClick(clickUpDelayMS);
 
-void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
-{
-    TimerClick->Enabled = false;
-    SetFormToProcessStopped();
+    UpdateStatusPanel_Clicks();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
+void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)
 {
     try
     {
-        double timeValue = EditTimeValue->Text.ToDouble();
+        double timeValue = edit->Text.ToDouble();
 
-        if (CBoxTimeFrame->Tag == 0)
+        if (cBox->Tag == 0)
         {
-            if (CBoxTimeFrame->ItemIndex == 1)
-                timeValue /= 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                timeValue /= (1000 * 60);
+            if (cBox->ItemIndex == 1)
+                timeValue /= 1000.0;
+            else if (cBox->ItemIndex == 2)
+                timeValue /= (1000.0 * 60.0);
         }
-        else if (CBoxTimeFrame->Tag == 1)
+        else if (cBox->Tag == 1)
         {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                timeValue *= 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                timeValue /= 60;
+            if (cBox->ItemIndex == 0)
+                timeValue *= 1000.0;
+            else if (cBox->ItemIndex == 2)
+                timeValue /= 60.0;
         }
-        else if (CBoxTimeFrame->Tag == 2)
+        else if (cBox->Tag == 2)
         {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                timeValue *= (60 * 1000);
-            else if (CBoxTimeFrame->ItemIndex == 1)
-                timeValue *= 60;
+            if (cBox->ItemIndex == 0)
+                timeValue *= (60.0 * 1000.0);
+            else if (cBox->ItemIndex == 1)
+                timeValue *= 60.0;
         }
 
-        EditTimeValue->Text = FloatToStr(timeValue);
+        edit->Text = FloatToStr(timeValue);
     }
     catch(...)
     {
 
     }
 
-    CBoxTimeFrame->Tag = CBoxTimeFrame->ItemIndex;
+    cBox->Tag = cBox->ItemIndex;
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnAboutClick(TObject* /*sender*/)
+void TFrmMain::UpdateStatusPanel_Clicks()
 {
-    FrmAbout->ShowModal();
+    StatusBar1->Panels->Items[0]->Text = String("Clicks: ") + IntToStr(ClickCount);
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::BtnExitClick(TObject* sender)
-{
-    if (FrmMain->BtnStop->Enabled)
-        FrmMain->BtnStopClick(sender);
-
-    Application->Terminate();
-}
-//---------------------------------------------------------------------------
-

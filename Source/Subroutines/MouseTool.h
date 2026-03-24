@@ -24,7 +24,7 @@ typedef TMouseTool ThisType;
 public:
     ////// only const static variables allowed in this public - see second public for regular stuff //////
 
-    static const int Click_DefaultUpDelayMS = 10;
+    static const DWORD Click_DefaultUpDelayMS = 10;
 
 protected:
     ////// static variables //////
@@ -52,8 +52,8 @@ public:
     virtual void Destroy(); //calls Destroy_Private()
     virtual bool Reset(); //calls Reset_Private() - It is good practice for the constructor to never call a virtual function
 
-    static bool MouseLeftClick(int clickUpDelayMS=Click_DefaultUpDelayMS);
-    static bool MouseRightClick(int clickUpDelayMS=Click_DefaultUpDelayMS);
+    static bool MouseLeftClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
+    static bool MouseRightClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
     static bool MoveMouse(int x, int y);
 };
 
