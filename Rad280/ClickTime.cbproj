@@ -77,13 +77,13 @@
         <IncludePath>..\Source\;..\Source\Subroutines\;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>..\Source\;..\Source\Subroutines\;..\;..\Libs\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.26.323.2;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2026;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.26.323.2;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
         <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_MinorVer>23</VerInfo_MinorVer>
-        <VerInfo_Release>225</VerInfo_Release>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_MinorVer>26</VerInfo_MinorVer>
+        <VerInfo_Release>323</VerInfo_Release>
+        <VerInfo_Build>2</VerInfo_Build>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -229,12 +229,7 @@
                 <Source>
                     <Source Name="MainSource">ClickTime.cpp</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k280.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp280.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k280.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp280.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>

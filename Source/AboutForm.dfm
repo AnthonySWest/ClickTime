@@ -26,7 +26,7 @@ object FrmAbout: TFrmAbout
     Alignment = taCenter
     Anchors = [akLeft, akTop, akRight]
     AutoSize = False
-    Caption = 'ClickTime by ASW Software, Copyright (c) 2023'
+    Caption = 'ClickTime by ASW Software, Copyright (c) 2023-2026'
   end
   object LblVersion: TLabel
     Left = 16

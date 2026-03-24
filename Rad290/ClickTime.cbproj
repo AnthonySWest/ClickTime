@@ -95,13 +95,13 @@
         <IncludePath>..\Source\;..\Source\Subroutines\;$(IncludePath)</IncludePath>
         <ILINK_LibraryPath>..\Source\;..\Source\Subroutines\;..\;..\Libs\;$(ILINK_LibraryPath)</ILINK_LibraryPath>
         <VerInfo_Locale>1033</VerInfo_Locale>
-        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
+        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.26.323.2;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2026;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.26.323.2;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
         <ILINK_DisableIncrementalLinking>true</ILINK_DisableIncrementalLinking>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
-        <VerInfo_MinorVer>23</VerInfo_MinorVer>
-        <VerInfo_Release>225</VerInfo_Release>
-        <VerInfo_Build>1</VerInfo_Build>
+        <VerInfo_MinorVer>26</VerInfo_MinorVer>
+        <VerInfo_Release>323</VerInfo_Release>
+        <VerInfo_Build>2</VerInfo_Build>
         <VerInfo_MajorVer>0</VerInfo_MajorVer>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
@@ -115,7 +115,6 @@
         <OutputExt>x86.exe</OutputExt>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
         <UWP_CppLogo44>..\Resource\Auto_clicker_44x44.png</UWP_CppLogo44>
-        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <UWP_CppLogo150>..\Resource\Auto_clicker_150x150.png</UWP_CppLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64)'!=''">
@@ -128,14 +127,12 @@
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
         <UWP_CppLogo44>..\Resource\Auto_clicker_44x44.png</UWP_CppLogo44>
-        <VerInfo_Keys>CompanyName=ASW Software;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.ASWSoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=A clicker and mouse manipulator.</VerInfo_Keys>
         <UWP_CppLogo150>..\Resource\Auto_clicker_150x150.png</UWP_CppLogo150>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win64x)'!=''">
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;$(DCC_Namespace)</DCC_Namespace>
         <BCC_PCHName_Clang>ClickTimePCH1.h</BCC_PCHName_Clang>
         <BT_BuildType>Debug</BT_BuildType>
-        <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=0.23.225.1;InternalName=ClickTime;LegalCopyright=ASW Software (c) 2023-2024;LegalTrademarks=;OriginalFilename=ClickTime;ProgramID=com.aswsoftware.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=0.23.225.1;Comments=</VerInfo_Keys>
         <Manifest_File>$(BDS)\bin\default_app.manifest</Manifest_File>
         <AppDPIAwarenessMode>PerMonitorV2</AppDPIAwarenessMode>
         <Icon_MainIcon>..\Resource\Auto_clicker_32x32.ico</Icon_MainIcon>
@@ -268,12 +265,7 @@
                 <Source>
                     <Source Name="MainSource">ClickTime.cpp</Source>
                 </Source>
-                <Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcboffice2k290.bpl">Embarcadero C++Builder Office 2000 Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\bcbofficexp290.bpl">Embarcadero C++Builder Office XP Servers Package</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dcloffice2k290.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>
-                    <Excluded_Packages Name="$(BDSBIN)\dclofficexp290.bpl">Microsoft Office XP Sample Automation Server Wrapper Components</Excluded_Packages>
-                </Excluded_Packages>
+                <Excluded_Packages/>
             </CPlusPlusBuilder.Personality>
             <Platforms>
                 <Platform value="Win32">True</Platform>
