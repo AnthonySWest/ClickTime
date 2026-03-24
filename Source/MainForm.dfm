@@ -17,12 +17,12 @@ object FrmMain: TFrmMain
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   TextHeight = 15
-  object Label1: TLabel
+  object LblClickInterval: TLabel
     Left = 8
     Top = 24
-    Width = 63
+    Width = 74
     Height = 15
-    Caption = 'Timeframe: '
+    Caption = 'Click interval: '
   end
   object BtnStart: TBitBtn
     Left = 8

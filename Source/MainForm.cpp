@@ -236,6 +236,24 @@ LRESULT CALLBACK TFrmMain::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM
     return ::CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 //---------------------------------------------------------------------------
+DWORD TFrmMain::GetClickIntervalMS()
+{
+    double timeValDbl = EditTimeValue->Text.ToDouble();
+    if (timeValDbl <= 0.0)
+        return 0;
+
+    DWORD intervalMS = 0;
+
+    if (CBoxTimeFrame->ItemIndex == 0)
+        intervalMS = static_cast<DWORD>(timeValDbl);;
+    else if (CBoxTimeFrame->ItemIndex == 1)
+        intervalMS = static_cast<DWORD>(timeValDbl * 1000.0);
+    else if (CBoxTimeFrame->ItemIndex == 2)
+        intervalMS = static_cast<DWORD>(timeValDbl * 60.0 * 1000.0);
+
+    return intervalMS;
+}
+//---------------------------------------------------------------------------
 DWORD TFrmMain::GetShiftStateMask(bool shift, bool ctrl, bool alt)
 {
     DWORD shiftState = 0;
@@ -256,25 +274,19 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 {
     bool showInvalidValueMsg = false;
 
+    BtnStart->Enabled = false;
+    ClickCount = 0;
+
     try
     {
-        ClickCount = 0;
-        BtnStart->Enabled = false;
-        double timeValue = EditTimeValue->Text.ToDouble();
-
-        if (timeValue <= 0)
+        DWORD clickIntervalMS = GetClickIntervalMS();
+        if (clickIntervalMS == 0)
         {
             showInvalidValueMsg = true;
         }
         else
         {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                TimerClick->Interval = timeValue;
-            else if (CBoxTimeFrame->ItemIndex == 1)
-                TimerClick->Interval = timeValue * 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                TimerClick->Interval = timeValue * 60 * 1000;
-
+            TimerClick->Interval = clickIntervalMS;
             TimerClick->Enabled = true;
             SetFormToProcessStarted();
         }
@@ -293,22 +305,21 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
-    int clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
+    DWORD clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
 
     if (TimerClick->Interval < clickUpDelayMS)
         TimerClick->Interval = clickUpDelayMS;
-    
+
     ClickCount++;
 
     if (RB_MouseLeft->Checked)
         TMouseTool::MouseLeftClick();
     else 
         TMouseTool::MouseRightClick();
-        
-    StatusBar1->Panels->Items[0]->Text = UnicodeString(L"Clicks: ") + IntToStr(ClickCount);
+
+    UpdateStatusPanel_Clicks();
 }
 //---------------------------------------------------------------------------
-
 void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 {
     TimerClick->Enabled = false;
@@ -364,6 +375,11 @@ void __fastcall TFrmMain::BtnExitClick(TObject* sender)
         FrmMain->BtnStopClick(sender);
 
     Application->Terminate();
+}
+//---------------------------------------------------------------------------
+void TFrmMain::UpdateStatusPanel_Clicks()
+{
+    StatusBar1->Panels->Items[0]->Text = String("Clicks: ") + IntToStr(ClickCount);
 }
 //---------------------------------------------------------------------------
 

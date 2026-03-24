@@ -27,7 +27,7 @@ __published: // IDE-managed Components
     TTimer *TimerClick;
     TBitBtn *BtnStop;
     TComboBox *CBoxTimeFrame;
-    TLabel *Label1;
+    TLabel *LblClickInterval;
     TEdit *EditTimeValue;
     TBitBtn *BtnAbout;
     TBitBtn *BtnExit;
@@ -63,13 +63,14 @@ private: // User declarations
 
     long long ClickCount;
 
-	// /////////// Functions go here ////////////////////////////
+    // /////////// Functions go here ////////////////////////////
 
-	virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
+    virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
 
+    DWORD GetClickIntervalMS();
     void InitializeKeyEventHook();
     void ShutdownKeyEventHook();
-
+    void UpdateStatusPanel_Clicks();
 
 public: // User declarations
     __fastcall TFrmMain(TComponent* owner);

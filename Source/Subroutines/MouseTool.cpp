@@ -64,7 +64,7 @@ bool TMouseTool::Reset() //virtual
 // -clickUpDelayMS is how long, in milliseconds, to wait before sending the up click.
 //  Delay defaults to Click_DefaultUpDelayMS.
 // -Returns false for failure. Call Windows GetLastError() for reason.
-bool TMouseTool::MouseLeftClick(int clickUpDelayMS)
+bool TMouseTool::MouseLeftClick(DWORD clickUpDelayMS)
 {
     bool result = true;
     INPUT mInput;
@@ -101,7 +101,7 @@ bool TMouseTool::MouseLeftClick(int clickUpDelayMS)
 // -clickUpDelayMS is how long, in milliseconds, to wait before sending the up click.
 //  Delay defaults to Click_DefaultUpDelayMS.
 // -Returns false for failure. Call Windows GetLastError() for reason.
-bool TMouseTool::MouseRightClick(int clickUpDelayMS)
+bool TMouseTool::MouseRightClick(DWORD clickUpDelayMS)
 {
     bool result = true;
     INPUT mInput;
