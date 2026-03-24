@@ -34,6 +34,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include "StringTool.h"
 //---------------------------------------------------------------------------
 using namespace Subroutines;
+using namespace System::Sysutils;
 //---------------------------------------------------------------------------
 
 // MsgDlg
@@ -129,9 +130,30 @@ void __fastcall TFrmMain::BtnExitClick(TObject* sender)
 void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 {
     bool showInvalidValueMsg = false;
+    DWORD holdIntervalMS = 0;
 
     BtnStart->Enabled = false;
     ClickCount = 0;
+    UpdateStatusPanel_Clicks();
+
+    try
+    {
+        holdIntervalMS = GetHoldClickIntervalMS();
+        if (holdIntervalMS == 0)
+            showInvalidValueMsg = true;
+    }
+    catch (...)
+    {
+        showInvalidValueMsg = true;
+    }
+
+    if (showInvalidValueMsg)
+    {
+        MsgDlg("Please enter a hold value greater than zero.",
+            TFrmMain::AppFriendlyName, TMsgDlgType::mtError, TMsgDlgButtons() << TMsgDlgBtn::mbOK);
+        SetFormToProcessStopped();
+        return;
+    }
 
     try
     {
@@ -142,6 +164,13 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
         }
         else
         {
+            // Fix up the UI click interval value if less than the hold click value
+            if (clickIntervalMS < holdIntervalMS)
+            {
+                clickIntervalMS = holdIntervalMS;
+                EditTimeValue->Text = UIntToStr(static_cast<unsigned int>(clickIntervalMS));
+            }
+
             TimerClick->Interval = clickIntervalMS;
             TimerClick->Enabled = true;
             SetFormToProcessStarted();
@@ -164,6 +193,11 @@ void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 {
     TimerClick->Enabled = false;
     SetFormToProcessStopped();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::CBoxHoldIntervalChange(TObject */*sender*/)
+{
+    UpdateEditFromIntervalCBoxSelection(CBoxHoldInterval, EditHoldInterval);
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
@@ -195,6 +229,11 @@ void __fastcall TFrmMain::FormDestroy(TObject* /*sender*/)
 DWORD TFrmMain::GetClickIntervalMS()
 {
     return GetIntervalMS(CBoxTimeFrame, EditTimeValue);
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetHoldClickIntervalMS()
+{
+    return GetIntervalMS(CBoxHoldInterval, EditHoldInterval);
 }
 //---------------------------------------------------------------------------
 DWORD TFrmMain::GetIntervalMS(TComboBox* cBox, TEdit* edit)
@@ -330,6 +369,8 @@ void TFrmMain::SetFormToProcessStarted()
     CBoxTimeFrame->Enabled = false;
     EditTimeValue->Enabled  = false;
 
+    CBoxHoldInterval->Enabled = false;
+    EditHoldInterval->Enabled  = false;
 }
 //---------------------------------------------------------------------------
 void TFrmMain::SetFormToProcessStopped()
@@ -341,6 +382,8 @@ void TFrmMain::SetFormToProcessStopped()
     CBoxTimeFrame->Enabled = true;
     EditTimeValue->Enabled  = true;
 
+    CBoxHoldInterval->Enabled = true;
+    EditHoldInterval->Enabled  = true;
 }
 //---------------------------------------------------------------------------
 // See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
@@ -354,7 +397,7 @@ void TFrmMain::ShutdownKeyEventHook()
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
-    DWORD clickUpDelayMS = TMouseTool::Click_DefaultUpDelayMS;
+    DWORD clickUpDelayMS = GetHoldClickIntervalMS();
 
     if (TimerClick->Interval < clickUpDelayMS)
         TimerClick->Interval = clickUpDelayMS;
@@ -362,9 +405,9 @@ void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
     ClickCount++;
 
     if (RB_MouseLeft->Checked)
-        TMouseTool::MouseLeftClick();
+        TMouseTool::MouseLeftClick(clickUpDelayMS);
     else
-        TMouseTool::MouseRightClick();
+        TMouseTool::MouseRightClick(clickUpDelayMS);
 
     UpdateStatusPanel_Clicks();
 }

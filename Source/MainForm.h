@@ -66,6 +66,7 @@ __published: // IDE-managed Components
     void __fastcall BtnExitClick(TObject *Sender);
     void __fastcall BtnStartClick(TObject *Sender);
     void __fastcall BtnStopClick(TObject *Sender);
+    void __fastcall CBoxHoldIntervalChange(TObject *Sender);
     void __fastcall CBoxTimeFrameChange(TObject *Sender);
     void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
     void __fastcall FormCreate(TObject *Sender);
@@ -106,6 +107,7 @@ private:
     virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
 
     DWORD GetClickIntervalMS();
+    DWORD GetHoldClickIntervalMS();
     void InitializeKeyEventHook();
     void ShutdownKeyEventHook();
     void UpdateStatusPanel_Clicks();

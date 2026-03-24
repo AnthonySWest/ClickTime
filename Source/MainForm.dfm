@@ -4,7 +4,7 @@ object FrmMain: TFrmMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'ClickTime'
-  ClientHeight = 231
+  ClientHeight = 261
   ClientWidth = 384
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,32 +19,39 @@ object FrmMain: TFrmMain
   TextHeight = 15
   object LblClickInterval: TLabel
     Left = 8
-    Top = 24
+    Top = 11
     Width = 74
     Height = 15
     Caption = 'Click interval: '
   end
+  object LblHoldInterval: TLabel
+    Left = 8
+    Top = 42
+    Width = 74
+    Height = 15
+    Caption = 'Hold interval: '
+  end
   object BtnStart: TBitBtn
     Left = 8
-    Top = 178
+    Top = 210
     Width = 75
     Height = 25
     Caption = '&Start'
-    TabOrder = 4
+    TabOrder = 6
     OnClick = BtnStartClick
   end
   object BtnStop: TBitBtn
     Left = 89
-    Top = 178
+    Top = 210
     Width = 75
     Height = 25
     Caption = '&Stop'
-    TabOrder = 5
+    TabOrder = 7
     OnClick = BtnStopClick
   end
   object CBoxTimeFrame: TComboBox
     Left = 88
-    Top = 21
+    Top = 8
     Width = 132
     Height = 23
     Style = csDropDownList
@@ -59,7 +66,7 @@ object FrmMain: TFrmMain
   end
   object EditTimeValue: TEdit
     Left = 240
-    Top = 21
+    Top = 8
     Width = 136
     Height = 23
     TabOrder = 1
@@ -67,25 +74,25 @@ object FrmMain: TFrmMain
   end
   object BtnAbout: TBitBtn
     Left = 240
-    Top = 178
+    Top = 210
     Width = 70
     Height = 25
     Caption = 'A&bout'
-    TabOrder = 6
+    TabOrder = 8
     OnClick = BtnAboutClick
   end
   object BtnExit: TBitBtn
     Left = 316
-    Top = 178
+    Top = 210
     Width = 60
     Height = 25
     Caption = 'E&xit'
-    TabOrder = 7
+    TabOrder = 9
     OnClick = BtnExitClick
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 211
+    Top = 241
     Width = 384
     Height = 20
     Panels = <
@@ -93,15 +100,14 @@ object FrmMain: TFrmMain
         Text = 'Clicks: 0'
         Width = 100
       end>
-    ExplicitTop = 209
   end
   object GBoxMouse: TGroupBox
     Left = 8
-    Top = 50
-    Width = 145
+    Top = 74
+    Width = 140
     Height = 55
     Caption = 'Mouse Button '
-    TabOrder = 2
+    TabOrder = 4
     object RB_MouseLeft: TRadioButton
       Left = 12
       Top = 24
@@ -123,11 +129,11 @@ object FrmMain: TFrmMain
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Top = 111
-    Width = 368
+    Top = 143
+    Width = 366
     Height = 54
     Caption = 'Hot Key Start/Stop '
-    TabOrder = 3
+    TabOrder = 5
     object CB_HK_Shift: TCheckBox
       Left = 24
       Top = 24
@@ -179,6 +185,29 @@ object FrmMain: TFrmMain
         'F11'
         'F12')
     end
+  end
+  object CBoxHoldInterval: TComboBox
+    Left = 88
+    Top = 39
+    Width = 132
+    Height = 23
+    Style = csDropDownList
+    ItemIndex = 0
+    TabOrder = 2
+    Text = 'Milliseconds'
+    OnChange = CBoxHoldIntervalChange
+    Items.Strings = (
+      'Milliseconds'
+      'Seconds'
+      'Minutes')
+  end
+  object EditHoldInterval: TEdit
+    Left = 240
+    Top = 39
+    Width = 136
+    Height = 23
+    TabOrder = 3
+    Text = '10'
   end
   object TimerClick: TTimer
     Enabled = False
