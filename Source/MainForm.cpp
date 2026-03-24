@@ -129,7 +129,7 @@ void __fastcall TFrmMain::BtnExitClick(TObject* sender)
 void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 {
     bool showInvalidValueMsg = false;
-    
+
     BtnStart->Enabled = false;
     ClickCount = 0;
 
@@ -168,40 +168,7 @@ void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
 {
-    try
-    {
-        double timeValue = EditTimeValue->Text.ToDouble();
-
-        if (CBoxTimeFrame->Tag == 0)
-        {
-            if (CBoxTimeFrame->ItemIndex == 1)
-                timeValue /= 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                timeValue /= (1000 * 60);
-        }
-        else if (CBoxTimeFrame->Tag == 1)
-        {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                timeValue *= 1000;
-            else if (CBoxTimeFrame->ItemIndex == 2)
-                timeValue /= 60;
-        }
-        else if (CBoxTimeFrame->Tag == 2)
-        {
-            if (CBoxTimeFrame->ItemIndex == 0)
-                timeValue *= (60 * 1000);
-            else if (CBoxTimeFrame->ItemIndex == 1)
-                timeValue *= 60;
-        }
-
-        EditTimeValue->Text = FloatToStr(timeValue);
-    }
-    catch(...)
-    {
-
-    }
-
-    CBoxTimeFrame->Tag = CBoxTimeFrame->ItemIndex;
+    UpdateEditFromIntervalCBoxSelection(CBoxTimeFrame, EditTimeValue);
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams &params)
@@ -227,17 +194,22 @@ void __fastcall TFrmMain::FormDestroy(TObject* /*sender*/)
 //---------------------------------------------------------------------------
 DWORD TFrmMain::GetClickIntervalMS()
 {
-    double timeValDbl = EditTimeValue->Text.ToDouble();
+    return GetIntervalMS(CBoxTimeFrame, EditTimeValue);
+}
+//---------------------------------------------------------------------------
+DWORD TFrmMain::GetIntervalMS(TComboBox* cBox, TEdit* edit)
+{
+    double timeValDbl = edit->Text.ToDouble();
     if (timeValDbl <= 0.0)
         return 0;
 
     DWORD intervalMS = 0;
 
-    if (CBoxTimeFrame->ItemIndex == 0)
+    if (cBox->ItemIndex == 0)
         intervalMS = static_cast<DWORD>(timeValDbl);
-    else if (CBoxTimeFrame->ItemIndex == 1)
+    else if (cBox->ItemIndex == 1)
         intervalMS = static_cast<DWORD>(timeValDbl * 1000.0);
-    else if (CBoxTimeFrame->ItemIndex == 2)
+    else if (cBox->ItemIndex == 2)
         intervalMS = static_cast<DWORD>(timeValDbl * 60.0 * 1000.0);
 
     return intervalMS;
@@ -395,6 +367,44 @@ void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
         TMouseTool::MouseRightClick();
 
     UpdateStatusPanel_Clicks();
+}
+//---------------------------------------------------------------------------
+void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)
+{
+    try
+    {
+        double timeValue = edit->Text.ToDouble();
+
+        if (cBox->Tag == 0)
+        {
+            if (cBox->ItemIndex == 1)
+                timeValue /= 1000.0;
+            else if (cBox->ItemIndex == 2)
+                timeValue /= (1000.0 * 60.0);
+        }
+        else if (cBox->Tag == 1)
+        {
+            if (cBox->ItemIndex == 0)
+                timeValue *= 1000.0;
+            else if (cBox->ItemIndex == 2)
+                timeValue /= 60.0;
+        }
+        else if (cBox->Tag == 2)
+        {
+            if (cBox->ItemIndex == 0)
+                timeValue *= (60.0 * 1000.0);
+            else if (cBox->ItemIndex == 1)
+                timeValue *= 60.0;
+        }
+
+        edit->Text = FloatToStr(timeValue);
+    }
+    catch(...)
+    {
+
+    }
+
+    cBox->Tag = cBox->ItemIndex;
 }
 //---------------------------------------------------------------------------
 void TFrmMain::UpdateStatusPanel_Clicks()

@@ -97,8 +97,10 @@ public:
     static System::Word AppStart_Hour, AppStart_Min, AppStart_Sec, AppStart_MSec;
 
 public:
+    static DWORD GetIntervalMS(TComboBox* cBox, TEdit* edit);
     static DWORD GetShiftStateMask(bool shift, bool ctrl, bool alt);
     static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+    static void UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit);
 
 private:
     virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
