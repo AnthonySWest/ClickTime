@@ -33,6 +33,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #include <Vcl.Menus.hpp>
 #include <Vcl.StdCtrls.hpp>
 //---------------------------------------------------------------------------
+// END OF IDE INCLUDES
+//---------------------------------------------------------------------------
 #include "Version.h"
 //---------------------------------------------------------------------------
 
@@ -42,36 +44,36 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 class TFrmMain : public TForm
 {
 __published: // IDE-managed Components
-    TBitBtn *BtnStart;
-    TTimer *TimerClick;
-    TBitBtn *BtnStop;
-    TComboBox *CBoxTimeFrame;
-    TLabel *LblClickInterval;
-    TEdit *EditTimeValue;
-    TBitBtn *BtnAbout;
-    TBitBtn *BtnExit;
-    TStatusBar *StatusBar1;
-    TGroupBox *GBoxMouse;
-    TRadioButton *RB_MouseLeft;
-    TRadioButton *RB_MouseRight;
-    TGroupBox *GroupBox1;
-    TCheckBox *CB_HK_Shift;
-    TCheckBox *CB_HK_Ctrl;
-    TCheckBox *CB_HK_Alt;
-    TComboBox *CBox_HK_FKey;
-    TLabel *LblHoldInterval;
-    TComboBox *CBoxHoldInterval;
-    TEdit *EditHoldInterval;
-    void __fastcall BtnAboutClick(TObject *Sender);
-    void __fastcall BtnExitClick(TObject *Sender);
-    void __fastcall BtnStartClick(TObject *Sender);
-    void __fastcall BtnStopClick(TObject *Sender);
-    void __fastcall CBoxHoldIntervalChange(TObject *Sender);
-    void __fastcall CBoxTimeFrameChange(TObject *Sender);
-    void __fastcall FormCloseQuery(TObject *Sender, bool &CanClose);
-    void __fastcall FormCreate(TObject *Sender);
-    void __fastcall FormDestroy(TObject *Sender);
-    void __fastcall TimerClickTimer(TObject *Sender);
+    TBitBtn* BtnStart;
+    TTimer* TimerClick;
+    TBitBtn* BtnStop;
+    TComboBox* CBoxTimeFrame;
+    TLabel* LblClickInterval;
+    TEdit* EditTimeValue;
+    TBitBtn* BtnAbout;
+    TBitBtn* BtnExit;
+    TStatusBar* StatusBar1;
+    TGroupBox* GBoxMouse;
+    TRadioButton* RB_MouseLeft;
+    TRadioButton* RB_MouseRight;
+    TGroupBox* GroupBox1;
+    TCheckBox* CB_HK_Shift;
+    TCheckBox* CB_HK_Ctrl;
+    TCheckBox* CB_HK_Alt;
+    TComboBox* CBox_HK_FKey;
+    TLabel* LblHoldInterval;
+    TComboBox* CBoxHoldInterval;
+    TEdit* EditHoldInterval;
+    void __fastcall BtnAboutClick(TObject* Sender);
+    void __fastcall BtnExitClick(TObject* Sender);
+    void __fastcall BtnStartClick(TObject* Sender);
+    void __fastcall BtnStopClick(TObject* Sender);
+    void __fastcall CBoxHoldIntervalChange(TObject* Sender);
+    void __fastcall CBoxTimeFrameChange(TObject* Sender);
+    void __fastcall FormCloseQuery(TObject* Sender, bool& CanClose);
+    void __fastcall FormCreate(TObject* Sender);
+    void __fastcall FormDestroy(TObject* Sender);
+    void __fastcall TimerClickTimer(TObject* Sender);
 
 private: // User declarations
     HHOOK WinKeyEventHook;
@@ -104,7 +106,7 @@ public:
     static void UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit);
 
 private:
-    virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams &params);
+    virtual void __fastcall CreateParams(Vcl::Controls::TCreateParams& params);
 
     DWORD GetClickIntervalMS();
     DWORD GetHoldClickIntervalMS();
@@ -119,11 +121,11 @@ public: // User declarations
     void SetFormToProcessStopped();
 };
 
-extern PACKAGE TFrmMain *FrmMain;
+extern PACKAGE TFrmMain* FrmMain;
 
 //---------------------------------------------------------------------------
 
-int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType, TMsgDlgButtons buttons);
+int MsgDlg(const UnicodeString& msg, const UnicodeString& title, TMsgDlgType dlgType, TMsgDlgButtons buttons);
 
 //---------------------------------------------------------------------------
 #endif // #ifndef MainFormH
