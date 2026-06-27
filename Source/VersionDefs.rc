@@ -1,0 +1,34 @@
+// Version format: major.2digitYear.month2DigitDay.build(ever increasing)
+#define VER_MAJ   0
+#define VER_MIN   26
+#define VER_SUB   627
+#define VER_BUILD 4
+
+#define VER_VERSION_STR         "0.26.627.4"
+
+#define VER_FILEVERSION         VER_MAJ,VER_MIN,VER_SUB,VER_BUILD
+#define VER_FILEVERSION_STR     ""VER_VERSION_STR"\0"
+
+// Change this if product version and file version are different
+#define VER_PRODUCTVERSION      VER_MAJ,VER_MIN,VER_SUB,VER_BUILD
+#define VER_PRODUCTVERSION_STR  ""VER_VERSION_STR"\0"
+
+#define APP_NAME_STR            "ClickTime"
+#define APP_COMPANYNAME_STR     "ASW Software"
+
+#define VER_COMPANYNAME_STR     ""APP_COMPANYNAME_STR"\0"
+#define VER_LEGALCOPYRIGHT_STR  "(c) 2023-2026 "APP_COMPANYNAME_STR"\0"
+#define VER_PROD_NAME_STR       ""APP_NAME_STR"\0"
+#define VER_PROG_ID_STR         "com.aswsoftware.clicktime\0"
+#define VER_TRADEMARKS_STR      "\0"
+#define VER_DESCRIPTION_STR     "Clicker and mouse manipulator\0"
+#define VER_COMMENT_STR         "Another progy by "APP_COMPANYNAME_STR"\0"
+
+#define VER_INT_NAME_STR        ""APP_NAME_STR"\0"
+
+// Note: in project options for 64-bit, add "_WIN64" to the resource compiler, directories and conditionals
+#ifdef _WIN64
+  #define VER_ORIG_NAME_STR     ""APP_NAME_STR".x64.exe\0"
+#else
+  #define VER_ORIG_NAME_STR     ""APP_NAME_STR".x86.exe\0"
+#endif
