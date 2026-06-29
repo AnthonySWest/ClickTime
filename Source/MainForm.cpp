@@ -375,6 +375,9 @@ void TFrmMain::SetFormToProcessStarted()
 
     CBoxHoldInterval->Enabled = false;
     EditHoldInterval->Enabled  = false;
+
+    GBoxMouse->Enabled = false;
+    GBoxHotKey->Enabled = false;
 }
 //---------------------------------------------------------------------------
 void TFrmMain::SetFormToProcessStopped()
@@ -388,6 +391,9 @@ void TFrmMain::SetFormToProcessStopped()
 
     CBoxHoldInterval->Enabled = true;
     EditHoldInterval->Enabled  = true;
+
+    GBoxMouse->Enabled = true;
+    GBoxHotKey->Enabled = true;
 }
 //---------------------------------------------------------------------------
 // See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
