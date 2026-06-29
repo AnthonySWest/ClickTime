@@ -195,8 +195,12 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 {
-    TimerClick->Enabled = false;
-    SetFormToProcessStopped();
+    DoStop();
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::CB_MC_UnlimitedClick(TObject* /*sender*/)
+{
+    Edit_MaxClicks->Enabled = !CB_MC_Unlimited->Checked;
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::CBoxHoldIntervalChange(TObject*/*sender*/)
@@ -213,6 +217,12 @@ void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams& params)
 {
     TForm::CreateParams(params); // inherited
     //params.ExStyle = params.ExStyle | WS_EX_NOACTIVATE;
+}
+//---------------------------------------------------------------------------
+void TFrmMain::DoStop()
+{
+    TimerClick->Enabled = false;
+    SetFormToProcessStopped();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::FormCloseQuery(TObject* /*sender*/, bool& /*canClose*/)
@@ -377,6 +387,7 @@ void TFrmMain::SetFormToProcessStarted()
     EditHoldInterval->Enabled  = false;
 
     GBoxMouse->Enabled = false;
+    GBoxMaxClicks->Enabled = false;
     GBoxHotKey->Enabled = false;
 }
 //---------------------------------------------------------------------------
@@ -393,6 +404,7 @@ void TFrmMain::SetFormToProcessStopped()
     EditHoldInterval->Enabled  = true;
 
     GBoxMouse->Enabled = true;
+    GBoxMaxClicks->Enabled = true;
     GBoxHotKey->Enabled = true;
 }
 //---------------------------------------------------------------------------
@@ -407,12 +419,26 @@ void TFrmMain::ShutdownKeyEventHook()
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
+    bool doStop = false;
     DWORD clickUpDelayMS = GetHoldClickIntervalMS();
+    long long maxClicks = static_cast<long long>(Edit_MaxClicks->Text.ToDouble());
+
+    if (!CB_MC_Unlimited->Checked && ClickCount >= maxClicks)
+    {   // Shouldn't get here, unless maybe the click intervals are REALLY short
+        DoStop();
+        return;
+    }
 
     if (TimerClick->Interval < clickUpDelayMS)
         TimerClick->Interval = clickUpDelayMS;
 
     ClickCount++;
+
+    if (!CB_MC_Unlimited->Checked && ClickCount == maxClicks)
+    {
+        TimerClick->Enabled = false;
+        doStop = true;
+    }
 
     if (RB_MouseLeft->Checked)
         TMouseTool::MouseLeftClick(clickUpDelayMS);
@@ -420,6 +446,9 @@ void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
         TMouseTool::MouseRightClick(clickUpDelayMS);
 
     UpdateStatusPanel_Clicks();
+
+    if (doStop)
+        DoStop();
 }
 //---------------------------------------------------------------------------
 void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)

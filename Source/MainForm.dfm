@@ -37,7 +37,7 @@ object FrmMain: TFrmMain
     Width = 75
     Height = 25
     Caption = '&Start'
-    TabOrder = 6
+    TabOrder = 7
     OnClick = BtnStartClick
   end
   object BtnStop: TBitBtn
@@ -46,7 +46,7 @@ object FrmMain: TFrmMain
     Width = 75
     Height = 25
     Caption = '&Stop'
-    TabOrder = 7
+    TabOrder = 8
     OnClick = BtnStopClick
   end
   object CBoxTimeFrame: TComboBox
@@ -78,7 +78,7 @@ object FrmMain: TFrmMain
     Width = 70
     Height = 25
     Caption = 'A&bout'
-    TabOrder = 8
+    TabOrder = 9
     OnClick = BtnAboutClick
   end
   object BtnExit: TBitBtn
@@ -87,7 +87,7 @@ object FrmMain: TFrmMain
     Width = 60
     Height = 25
     Caption = 'E&xit'
-    TabOrder = 9
+    TabOrder = 10
     OnClick = BtnExitClick
   end
   object StatusBar1: TStatusBar
@@ -133,7 +133,7 @@ object FrmMain: TFrmMain
     Width = 366
     Height = 54
     Caption = 'Hot Key Start/Stop '
-    TabOrder = 5
+    TabOrder = 6
     object CB_HK_Shift: TCheckBox
       Left = 24
       Top = 24
@@ -208,6 +208,35 @@ object FrmMain: TFrmMain
     Height = 23
     TabOrder = 3
     Text = '10'
+  end
+  object GBoxMaxClicks: TGroupBox
+    Left = 158
+    Top = 74
+    Width = 218
+    Height = 55
+    Caption = 'Max Clicks'
+    TabOrder = 5
+    object CB_MC_Unlimited: TCheckBox
+      Left = 12
+      Top = 24
+      Width = 81
+      Height = 17
+      Caption = 'Unlimited'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+      OnClick = CB_MC_UnlimitedClick
+    end
+    object Edit_MaxClicks: TEdit
+      Left = 117
+      Top = 21
+      Width = 89
+      Height = 23
+      Enabled = False
+      NumbersOnly = True
+      TabOrder = 1
+      Text = '10'
+    end
   end
   object TimerClick: TTimer
     Enabled = False
