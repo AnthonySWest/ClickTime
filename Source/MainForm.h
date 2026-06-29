@@ -56,7 +56,7 @@ __published: // IDE-managed Components
     TGroupBox* GBoxMouse;
     TRadioButton* RB_MouseLeft;
     TRadioButton* RB_MouseRight;
-    TGroupBox* GroupBox1;
+    TGroupBox* GBoxHotKey;
     TCheckBox* CB_HK_Shift;
     TCheckBox* CB_HK_Ctrl;
     TCheckBox* CB_HK_Alt;
@@ -64,10 +64,14 @@ __published: // IDE-managed Components
     TLabel* LblHoldInterval;
     TComboBox* CBoxHoldInterval;
     TEdit* EditHoldInterval;
+    TGroupBox* GBoxMaxClicks;
+    TCheckBox* CB_MC_Unlimited;
+    TEdit* Edit_MaxClicks;
     void __fastcall BtnAboutClick(TObject* Sender);
     void __fastcall BtnExitClick(TObject* Sender);
     void __fastcall BtnStartClick(TObject* Sender);
     void __fastcall BtnStopClick(TObject* Sender);
+    void __fastcall CB_MC_UnlimitedClick(TObject* Sender);
     void __fastcall CBoxHoldIntervalChange(TObject* Sender);
     void __fastcall CBoxTimeFrameChange(TObject* Sender);
     void __fastcall FormCloseQuery(TObject* Sender, bool& CanClose);
@@ -117,6 +121,7 @@ private:
 public: // User declarations
     __fastcall TFrmMain(TComponent* owner);
 
+    void DoStop();
     void SetFormToProcessStarted();
     void SetFormToProcessStopped();
 };

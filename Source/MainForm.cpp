@@ -40,10 +40,10 @@ using namespace System::Sysutils;
 // MsgDlg
 //
 // A messagebox wrapper
-int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlgType,
+int MsgDlg(const UnicodeString& msg, const UnicodeString& title, TMsgDlgType dlgType,
     TMsgDlgButtons buttons)
 {
-    TForm *msgDlg = CreateMessageDialog(msg, dlgType, buttons);
+    TForm* msgDlg = CreateMessageDialog(msg, dlgType, buttons);
     TModalResult mRes;
 
     msgDlg->Color = clWindow;
@@ -71,7 +71,7 @@ int MsgDlg(const UnicodeString &msg, const UnicodeString &title, TMsgDlgType dlg
 // TFrmMain
 /////////////////////////////////////////////////////////////////////////////
 
-TFrmMain *FrmMain;
+TFrmMain* FrmMain;
 
 AnsiString TFrmMain::AppFriendlyName    = "ClickTime";
 AnsiString TFrmMain::CompanyName        = "ASW Software";
@@ -96,9 +96,9 @@ System::Word TFrmMain::AppStart_Sec;
 System::Word TFrmMain::AppStart_MSec;
 
 #ifdef _DEBUG
-    UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " - Debug Compile -";
+UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " - Debug Compile -";
 #else
-    UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " -";
+UnicodeString TFrmMain::LogID = L"- " + TFrmMain::AppFriendlyName + " -";
 #endif
 
 //---------------------------------------------------------------------------
@@ -112,6 +112,10 @@ __fastcall TFrmMain::TFrmMain(TComponent* owner)
     AltKeyDown = false;
 
     Caption = Caption + " - " + TFrmMain::CompanyName + " - " + AppVersion.ToStrVer().c_str();
+
+#ifdef _DEBUG
+    Caption = Caption + " - Debug";
+#endif
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::BtnAboutClick(TObject* /*sender*/)
@@ -176,7 +180,7 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
             SetFormToProcessStarted();
         }
     }
-    catch(...)
+    catch (...)
     {
         showInvalidValueMsg = true;
     }
@@ -191,11 +195,15 @@ void __fastcall TFrmMain::BtnStartClick(TObject* /*sender*/)
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::BtnStopClick(TObject* /*sender*/)
 {
-    TimerClick->Enabled = false;
-    SetFormToProcessStopped();
+    DoStop();
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::CBoxHoldIntervalChange(TObject */*sender*/)
+void __fastcall TFrmMain::CB_MC_UnlimitedClick(TObject* /*sender*/)
+{
+    Edit_MaxClicks->Enabled = !CB_MC_Unlimited->Checked;
+}
+//---------------------------------------------------------------------------
+void __fastcall TFrmMain::CBoxHoldIntervalChange(TObject*/*sender*/)
 {
     UpdateEditFromIntervalCBoxSelection(CBoxHoldInterval, EditHoldInterval);
 }
@@ -205,10 +213,16 @@ void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
     UpdateEditFromIntervalCBoxSelection(CBoxTimeFrame, EditTimeValue);
 }
 //---------------------------------------------------------------------------
-void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams &params)
+void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams& params)
 {
     TForm::CreateParams(params); // inherited
     //params.ExStyle = params.ExStyle | WS_EX_NOACTIVATE;
+}
+//---------------------------------------------------------------------------
+void TFrmMain::DoStop()
+{
+    TimerClick->Enabled = false;
+    SetFormToProcessStopped();
 }
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::FormCloseQuery(TObject* /*sender*/, bool& /*canClose*/)
@@ -371,6 +385,10 @@ void TFrmMain::SetFormToProcessStarted()
 
     CBoxHoldInterval->Enabled = false;
     EditHoldInterval->Enabled  = false;
+
+    GBoxMouse->Enabled = false;
+    GBoxMaxClicks->Enabled = false;
+    GBoxHotKey->Enabled = false;
 }
 //---------------------------------------------------------------------------
 void TFrmMain::SetFormToProcessStopped()
@@ -384,6 +402,10 @@ void TFrmMain::SetFormToProcessStopped()
 
     CBoxHoldInterval->Enabled = true;
     EditHoldInterval->Enabled  = true;
+
+    GBoxMouse->Enabled = true;
+    GBoxMaxClicks->Enabled = true;
+    GBoxHotKey->Enabled = true;
 }
 //---------------------------------------------------------------------------
 // See: https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setwineventhook?redirectedfrom=MSDN
@@ -397,12 +419,26 @@ void TFrmMain::ShutdownKeyEventHook()
 //---------------------------------------------------------------------------
 void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
 {
+    bool doStop = false;
     DWORD clickUpDelayMS = GetHoldClickIntervalMS();
+    long long maxClicks = static_cast<long long>(Edit_MaxClicks->Text.ToDouble());
+
+    if (!CB_MC_Unlimited->Checked && ClickCount >= maxClicks)
+    {   // Shouldn't get here, unless maybe the click intervals are REALLY short
+        DoStop();
+        return;
+    }
 
     if (TimerClick->Interval < clickUpDelayMS)
         TimerClick->Interval = clickUpDelayMS;
 
     ClickCount++;
+
+    if (!CB_MC_Unlimited->Checked && ClickCount == maxClicks)
+    {
+        TimerClick->Enabled = false;
+        doStop = true;
+    }
 
     if (RB_MouseLeft->Checked)
         TMouseTool::MouseLeftClick(clickUpDelayMS);
@@ -410,6 +446,9 @@ void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
         TMouseTool::MouseRightClick(clickUpDelayMS);
 
     UpdateStatusPanel_Clicks();
+
+    if (doStop)
+        DoStop();
 }
 //---------------------------------------------------------------------------
 void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)
@@ -442,7 +481,7 @@ void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)
 
         edit->Text = FloatToStr(timeValue);
     }
-    catch(...)
+    catch (...)
     {
 
     }
