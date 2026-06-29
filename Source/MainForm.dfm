@@ -127,7 +127,7 @@ object FrmMain: TFrmMain
       TabOrder = 1
     end
   end
-  object GroupBox1: TGroupBox
+  object GBoxHotKey: TGroupBox
     Left = 8
     Top = 143
     Width = 366

@@ -56,7 +56,7 @@ __published: // IDE-managed Components
     TGroupBox* GBoxMouse;
     TRadioButton* RB_MouseLeft;
     TRadioButton* RB_MouseRight;
-    TGroupBox* GroupBox1;
+    TGroupBox* GBoxHotKey;
     TCheckBox* CB_HK_Shift;
     TCheckBox* CB_HK_Ctrl;
     TCheckBox* CB_HK_Alt;
