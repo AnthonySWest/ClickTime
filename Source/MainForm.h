@@ -67,6 +67,8 @@ __published: // IDE-managed Components
     TGroupBox* GBoxMaxClicks;
     TCheckBox* CB_MC_Unlimited;
     TEdit* Edit_MaxClicks;
+    TLabel* LblType;
+    TComboBox* CBoxType;
     void __fastcall BtnAboutClick(TObject* Sender);
     void __fastcall BtnExitClick(TObject* Sender);
     void __fastcall BtnStartClick(TObject* Sender);
@@ -74,6 +76,7 @@ __published: // IDE-managed Components
     void __fastcall CB_MC_UnlimitedClick(TObject* Sender);
     void __fastcall CBoxHoldIntervalChange(TObject* Sender);
     void __fastcall CBoxTimeFrameChange(TObject* Sender);
+    void __fastcall CBoxTypeChange(TObject* Sender);
     void __fastcall FormCloseQuery(TObject* Sender, bool& CanClose);
     void __fastcall FormCreate(TObject* Sender);
     void __fastcall FormDestroy(TObject* Sender);
@@ -116,6 +119,8 @@ private:
     DWORD GetHoldClickIntervalMS();
     void InitializeKeyEventHook();
     void ShutdownKeyEventHook();
+    void UpdateHoldIntervalControls(bool enabled);
+    void UpdateHoldIntervalControls();
     void UpdateStatusPanel_Clicks();
 
 public: // User declarations

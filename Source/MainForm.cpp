@@ -213,6 +213,11 @@ void __fastcall TFrmMain::CBoxTimeFrameChange(TObject* /*sender*/)
     UpdateEditFromIntervalCBoxSelection(CBoxTimeFrame, EditTimeValue);
 }
 //---------------------------------------------------------------------------
+void __fastcall TFrmMain::CBoxTypeChange(TObject* /*sender*/)
+{
+    UpdateHoldIntervalControls();
+}
+//---------------------------------------------------------------------------
 void __fastcall TFrmMain::CreateParams(Vcl::Controls::TCreateParams& params)
 {
     TForm::CreateParams(params); // inherited
@@ -383,8 +388,8 @@ void TFrmMain::SetFormToProcessStarted()
     CBoxTimeFrame->Enabled = false;
     EditTimeValue->Enabled  = false;
 
-    CBoxHoldInterval->Enabled = false;
-    EditHoldInterval->Enabled  = false;
+    CBoxType->Enabled = false;
+    UpdateHoldIntervalControls(false);
 
     GBoxMouse->Enabled = false;
     GBoxMaxClicks->Enabled = false;
@@ -400,8 +405,8 @@ void TFrmMain::SetFormToProcessStopped()
     CBoxTimeFrame->Enabled = true;
     EditTimeValue->Enabled  = true;
 
-    CBoxHoldInterval->Enabled = true;
-    EditHoldInterval->Enabled  = true;
+    CBoxType->Enabled = true;
+    UpdateHoldIntervalControls();
 
     GBoxMouse->Enabled = true;
     GBoxMaxClicks->Enabled = true;
@@ -441,9 +446,19 @@ void __fastcall TFrmMain::TimerClickTimer(TObject* /*sender*/)
     }
 
     if (RB_MouseLeft->Checked)
-        TMouseTool::MouseLeftClick(clickUpDelayMS);
+    {
+        if (CBoxType->ItemIndex == 0)
+            TMouseTool::MouseLeftClick(clickUpDelayMS);
+        else
+            TMouseTool::MouseDoubleLeftClick();
+    }
     else
-        TMouseTool::MouseRightClick(clickUpDelayMS);
+    {
+        if (CBoxType->ItemIndex == 0)
+            TMouseTool::MouseRightClick(clickUpDelayMS);
+        else
+            TMouseTool::MouseDoubleRightClick();
+    }
 
     UpdateStatusPanel_Clicks();
 
@@ -487,6 +502,21 @@ void TFrmMain::UpdateEditFromIntervalCBoxSelection(TComboBox* cBox, TEdit* edit)
     }
 
     cBox->Tag = cBox->ItemIndex;
+}
+//---------------------------------------------------------------------------
+void TFrmMain::UpdateHoldIntervalControls(bool enabled)
+{
+    LblHoldInterval->Enabled = enabled;
+    CBoxHoldInterval->Enabled = enabled;
+    EditHoldInterval->Enabled = enabled;
+}
+//---------------------------------------------------------------------------
+void TFrmMain::UpdateHoldIntervalControls()
+{
+    if (CBoxType->ItemIndex == 0)
+        UpdateHoldIntervalControls(true);
+    else
+        UpdateHoldIntervalControls(false);
 }
 //---------------------------------------------------------------------------
 void TFrmMain::UpdateStatusPanel_Clicks()
