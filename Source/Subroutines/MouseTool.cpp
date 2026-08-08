@@ -73,6 +73,44 @@ bool TMouseTool::Reset() //virtual
     return Reset_Private();
 }
 //---------------------------------------------------------------------------
+DWORD TMouseTool::GetDoubleClickDelayMS()
+{
+    static DWORD const idealDelay = 50;
+
+    // Note: Windows default is 500 max delay to qualify as a double-click
+    DWORD delayMS = (::GetDoubleClickTime() / 2) + 1;
+    if (delayMS > idealDelay)
+        return idealDelay;
+
+    return delayMS;
+}
+//---------------------------------------------------------------------------
+bool TMouseTool::MouseDoubleLeftClick()
+{
+    static DWORD const clickUpDelayMS = 10;
+
+    // Send click 1
+    if (!MouseLeftClick(clickUpDelayMS))
+        return false;
+
+    // Wait for the appropriate double-click delay and send the second click
+    ::Sleep(GetDoubleClickDelayMS());
+    return MouseLeftClick(clickUpDelayMS);
+}
+//---------------------------------------------------------------------------
+bool TMouseTool::MouseDoubleRightClick()
+{
+    static DWORD const clickUpDelayMS = 10;
+
+    // Send click 1
+    if (!MouseRightClick(clickUpDelayMS))
+        return false;
+
+    // Wait for the appropriate double-click delay and send the second click
+    ::Sleep(GetDoubleClickDelayMS());
+    return MouseRightClick(clickUpDelayMS);
+}
+//---------------------------------------------------------------------------
 // -Static
 // -clickUpDelayMS is how long, in milliseconds, to wait before sending the up click.
 //  Delay defaults to Click_DefaultUpDelayMS.

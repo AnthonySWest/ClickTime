@@ -43,6 +43,9 @@ public:
     static const DWORD Click_DefaultUpDelayMS = 10;
 
 public:
+    static DWORD GetDoubleClickDelayMS();
+    static bool MouseDoubleLeftClick();
+    static bool MouseDoubleRightClick();
     static bool MouseLeftClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
     static bool MouseRightClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
     static bool MoveMouse(int x, int y);

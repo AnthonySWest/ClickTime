@@ -25,11 +25,18 @@ object FrmMain: TFrmMain
     Caption = 'Click interval: '
   end
   object LblHoldInterval: TLabel
-    Left = 8
+    Left = 125
     Top = 42
     Width = 74
     Height = 15
     Caption = 'Hold interval: '
+  end
+  object LblType: TLabel
+    Left = 8
+    Top = 42
+    Width = 30
+    Height = 15
+    Caption = 'Type: '
   end
   object BtnStart: TBitBtn
     Left = 8
@@ -37,7 +44,7 @@ object FrmMain: TFrmMain
     Width = 75
     Height = 25
     Caption = '&Start'
-    TabOrder = 7
+    TabOrder = 8
     OnClick = BtnStartClick
   end
   object BtnStop: TBitBtn
@@ -46,7 +53,7 @@ object FrmMain: TFrmMain
     Width = 75
     Height = 25
     Caption = '&Stop'
-    TabOrder = 8
+    TabOrder = 9
     OnClick = BtnStopClick
   end
   object CBoxTimeFrame: TComboBox
@@ -78,7 +85,7 @@ object FrmMain: TFrmMain
     Width = 70
     Height = 25
     Caption = 'A&bout'
-    TabOrder = 9
+    TabOrder = 10
     OnClick = BtnAboutClick
   end
   object BtnExit: TBitBtn
@@ -87,7 +94,7 @@ object FrmMain: TFrmMain
     Width = 60
     Height = 25
     Caption = 'E&xit'
-    TabOrder = 10
+    TabOrder = 11
     OnClick = BtnExitClick
   end
   object StatusBar1: TStatusBar
@@ -107,7 +114,7 @@ object FrmMain: TFrmMain
     Width = 140
     Height = 55
     Caption = 'Mouse Button '
-    TabOrder = 4
+    TabOrder = 5
     object RB_MouseLeft: TRadioButton
       Left = 12
       Top = 24
@@ -133,7 +140,7 @@ object FrmMain: TFrmMain
     Width = 366
     Height = 54
     Caption = 'Hot Key Start/Stop '
-    TabOrder = 6
+    TabOrder = 7
     object CB_HK_Shift: TCheckBox
       Left = 24
       Top = 24
@@ -187,13 +194,13 @@ object FrmMain: TFrmMain
     end
   end
   object CBoxHoldInterval: TComboBox
-    Left = 88
+    Left = 203
     Top = 39
-    Width = 132
+    Width = 107
     Height = 23
     Style = csDropDownList
     ItemIndex = 0
-    TabOrder = 2
+    TabOrder = 3
     Text = 'Milliseconds'
     OnChange = CBoxHoldIntervalChange
     Items.Strings = (
@@ -202,11 +209,11 @@ object FrmMain: TFrmMain
       'Minutes')
   end
   object EditHoldInterval: TEdit
-    Left = 240
+    Left = 316
     Top = 39
-    Width = 136
+    Width = 60
     Height = 23
-    TabOrder = 3
+    TabOrder = 4
     Text = '10'
   end
   object GBoxMaxClicks: TGroupBox
@@ -215,7 +222,7 @@ object FrmMain: TFrmMain
     Width = 218
     Height = 55
     Caption = 'Max Clicks'
-    TabOrder = 5
+    TabOrder = 6
     object CB_MC_Unlimited: TCheckBox
       Left = 12
       Top = 24
@@ -237,6 +244,20 @@ object FrmMain: TFrmMain
       TabOrder = 1
       Text = '10'
     end
+  end
+  object CBoxType: TComboBox
+    Left = 44
+    Top = 39
+    Width = 65
+    Height = 23
+    Style = csDropDownList
+    ItemIndex = 0
+    TabOrder = 2
+    Text = 'Single'
+    OnChange = CBoxTypeChange
+    Items.Strings = (
+      'Single'
+      'Double')
   end
   object TimerClick: TTimer
     Enabled = False
