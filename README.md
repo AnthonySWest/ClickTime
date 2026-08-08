@@ -1,6 +1,8 @@
 # ClickTime
 An auto clicker and mouse manipulator.
 
+<img width="400" height="299" alt="image" src="https://github.com/user-attachments/assets/b497194d-f39b-4bfa-91bb-e45784e47d02" />
+
 # Donations:
 
 Pizza money donations are always appreciated:
