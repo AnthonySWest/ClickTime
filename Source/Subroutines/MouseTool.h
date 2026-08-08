@@ -25,6 +25,8 @@ limitations under the License.
 #ifndef MouseToolH
 #define MouseToolH
 //---------------------------------------------------------------------------
+#include <windows.h>
+//---------------------------------------------------------------------------
 
 namespace Subroutines
 {
@@ -34,26 +36,18 @@ namespace Subroutines
 /////////////////////////////////////////////////////////////////////////////
 class TMouseTool
 {
+private:
     typedef TMouseTool ThisType;
 
 public:
-    ////// only const static variables allowed in this public - see second public for regular stuff //////
-
     static const DWORD Click_DefaultUpDelayMS = 10;
 
-protected:
-    ////// static variables //////
-
-    ////// variables //////
-
-    ////// functions //////
+public:
+    static bool MouseLeftClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
+    static bool MouseRightClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
+    static bool MoveMouse(int x, int y);
 
 private:
-    ////// static variables //////
-
-    ////// variables //////
-
-    ////// functions //////
     void Destroy_Private();
     bool Reset_Private();
 
@@ -61,15 +55,8 @@ public:
     TMouseTool();
     ~TMouseTool();
 
-    ////// variables //////
-
-    ////// functions //////
     virtual void Destroy(); //calls Destroy_Private()
     virtual bool Reset(); //calls Reset_Private() - It is good practice for the constructor to never call a virtual function
-
-    static bool MouseLeftClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
-    static bool MouseRightClick(DWORD clickUpDelayMS = Click_DefaultUpDelayMS);
-    static bool MoveMouse(int x, int y);
 };
 
 } // namespace Subroutines
